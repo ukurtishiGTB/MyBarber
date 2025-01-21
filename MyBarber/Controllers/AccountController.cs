@@ -62,17 +62,36 @@ public class AccountController : Controller
     {
         if (ModelState.IsValid)
         {
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
+            // Gjeni përdoruesin me email
+            var user = await _userManager.FindByEmailAsync(model.Email);
 
-            if (result.Succeeded)
+            if (user != null)
             {
-                return RedirectToAction("Index", "Home");
-            }
+                // Provoni të bëni login-in me PasswordSignInAsync
+                var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, false);
 
-            ModelState.AddModelError(string.Empty, "Invalid login attempt");
+                if (result.Succeeded)
+                {
+                    // Kyçje e suksesshme, redirigoni në faqen kryesore
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    // Gabim në login (fjalkalimi gabim)
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                }
+            }
+            else
+            {
+                // Përdoruesi nuk ekziston
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+            }
         }
-        return View(model); // Return the same view to show validation errors
+
+        // Kthe faqen me mesazhin e gabimit nëse login nuk ka funksionuar
+        return View(model);
     }
+
 
     [HttpPost]
     public async Task<IActionResult> Logout()
