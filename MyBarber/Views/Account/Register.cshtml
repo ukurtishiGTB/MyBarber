@@ -1,0 +1,24 @@
+@model MyBarber.ViewModels.RegisterViewModel
+
+<form asp-action="Register" method="post">
+    <div>
+        <label for="name">Name</label>
+        <input type="text" id="name" name="Name" required />
+    </div>
+    <div>
+        <label for="email">Email</label>
+        <input type="email" id="email" name="Email" required />
+    </div>
+    <div>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="Password" required />
+    </div>
+    <div>
+        <label for="role">Select Role</label>
+        <select id="role" name="Role">
+            <option value="User">User</option>
+            <option value="Barber">Barber</option>
+        </select>
+    </div>
+    <button type="submit">Register</button>
+</form>
