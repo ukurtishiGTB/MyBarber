@@ -11,7 +11,7 @@ public class Appointment
     [Required]
     public int BarberId { get; set; }
     [Required]
-    public DateTime AppointmentDateee { get; set; }
+    public DateTime AppointmentDate { get; set; }
     
     [ForeignKey("UserId")]
     public User User { get; set; }
