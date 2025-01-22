@@ -1,12 +1,18 @@
 ﻿@model MyBarber.ViewModels.BarberLoginViewModel
 
-<h2>Login as Barber</h2>
-<form method="post">
-    <label for="email">Email:</label>
-    <input type="email" name="Email" required />
+<h2 style="text-align: center; color: #333;">Login as Barber</h2>
+<form method="post" style="max-width: 400px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+    <label for="email" style="display: block; margin-bottom: 8px; font-weight: bold; color: #555;">Email:</label>
+    <input type="email" name="Email" required style="width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;">
 
-    <label for="password">Password:</label>
-    <input type="password" name="Password" required />
+    <label for="password" style="display: block; margin-bottom: 8px; font-weight: bold; color: #555;">Password:</label>
+    <input type="password" name="Password" required style="width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;">
 
-    <button type="submit">Login</button>
+    <div style="margin-bottom: 20px;">
+        <label for="rememberMe" style="font-weight: normal; color: #555;">
+            <input type="checkbox" name="RememberMe" id="rememberMe" style="margin-right: 8px;">
+            Remember Me
+        </label>
+    </div>
+    <button type="submit" style="width: 100%; padding: 10px; background-color: #000000; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer;">Login</button>
 </form>
