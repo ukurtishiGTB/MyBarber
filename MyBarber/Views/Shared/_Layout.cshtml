@@ -30,6 +30,24 @@
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="RegisterChoice">Register</a>
                     </li>
+                    <li>
+                            @if (ViewContext.HttpContext.Session.GetInt32("UserId") != null)
+                            {
+                                <!-- Show for logged-in User -->
+                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="MyAccount">My Account</a>
+                            }
+                            else if (ViewContext.HttpContext.Session.GetInt32("BarberId") != null)
+                            {
+                                <!-- Show for logged-in Barber -->
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Barber" asp-action="MyAccount">My Account</a>
+                            }
+                            else
+                            {
+                                <!-- Show login/register links if no one is logged in -->
+                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Login">User Login</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Barber" asp-action="Login">Barber Login</a>
+                            }
+                    </li>
                 </ul>
             </div>
         </div>
