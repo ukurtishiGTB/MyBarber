@@ -20,13 +20,13 @@
             <td>@appointment.AppointmentDate.ToString("hh:mm tt")</td>
             <td>@appointment.Status</td>
             <td>
-                <form asp-action="Confirm" method="post">
+                <form asp-action="Accepted" method="post">
                     <input type="hidden" name="appointmentId" value="@appointment.Id" />
-                    <button type="submit">Confirm</button>
+                    <button type="submit">Accept</button>
                 </form>
-                <form asp-action="Cancel" method="post">
+                <form asp-action="Rejected" method="post">
                     <input type="hidden" name="appointmentId" value="@appointment.Id" />
-                    <button type="submit">Cancel</button>
+                    <button type="submit">Reject</button>
                 </form>
             </td>
         </tr>
