@@ -57,7 +57,7 @@ namespace MyBarber.Controllers
             {
                 HttpContext.Session.SetInt32("UserId", user.Id);
                 HttpContext.Session.SetString("UserName", user.Name);
-
+                TempData["LoginMessage"] = "Welcome back, " + user.Name + "!";
                 return RedirectToAction("Index", "Home");
             }
 
