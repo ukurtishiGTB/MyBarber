@@ -36,7 +36,9 @@ namespace MyBarber.Controllers
 
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Login");
+                HttpContext.Session.SetInt32("UserId", user.Id);
+                HttpContext.Session.SetString("UserName", user.Name);
+                return RedirectToAction("Index", "Home");
             }
             return View(model);
         }
@@ -53,12 +55,32 @@ namespace MyBarber.Controllers
             var user = _context.Users.FirstOrDefault(u => u.Email == model.Email);
             if (user != null && BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash))
             {
-                // TODO: Handle successful login, e.g., set session
-                return RedirectToAction("Dashboard");
+                HttpContext.Session.SetInt32("UserId", user.Id);
+                HttpContext.Session.SetString("UserName", user.Name);
+
+                return RedirectToAction("Index", "Home");
             }
 
             ModelState.AddModelError(string.Empty, "Invalid login attempt");
             return View(model);
         }
+        [Route("MyAccount")]
+        public IActionResult MyAccount()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+            if (user == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            return View(user);
+        }
+
     }
 }
