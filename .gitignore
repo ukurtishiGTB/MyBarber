@@ -4,3 +4,9 @@ obj/
 riderModule.iml
 /_ReSharper.Caches/
 /.vs/MyBarber
+.vs/
+*.v9.bin
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
