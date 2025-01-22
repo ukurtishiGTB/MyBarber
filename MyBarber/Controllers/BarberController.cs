@@ -88,6 +88,15 @@ namespace MyBarber.Controllers
 
             return View(barber);
         }
+        [Route("Dashboard")]
+        public IActionResult Dashboard()
+        {
+            var barberId = HttpContext.Session.GetInt32("BarberId");
+            if (barberId == null) return RedirectToAction("Login");
+
+            var barber = _context.Barbers.FirstOrDefault(b => b.Id == barberId);
+            return View(barber);
+        }
 
     }
 
