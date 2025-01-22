@@ -36,7 +36,9 @@ namespace MyBarber.Controllers
 
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Login");
+                HttpContext.Session.SetInt32("UserId", user.Id);
+                HttpContext.Session.SetString("UserName", user.Name);
+                return RedirectToAction("Index", "Home");
             }
             return View(model);
         }
@@ -56,7 +58,7 @@ namespace MyBarber.Controllers
                 HttpContext.Session.SetInt32("UserId", user.Id);
                 HttpContext.Session.SetString("UserName", user.Name);
 
-                return RedirectToAction("Dashboard");
+                return RedirectToAction("Index", "Home");
             }
 
             ModelState.AddModelError(string.Empty, "Invalid login attempt");

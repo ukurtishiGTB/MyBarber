@@ -41,7 +41,11 @@ namespace MyBarber.Controllers
 
                 _context.Barbers.Add(barber);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Login");
+                HttpContext.Session.SetInt32("BarberId", barber.Id);
+                HttpContext.Session.SetString("BarberName", barber.Name);
+
+                // Redirect to My Account page
+                return RedirectToAction("Index", "Home");
             }
             return View(model);
         }
