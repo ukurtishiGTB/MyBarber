@@ -5,7 +5,7 @@ using MyBarber.Models;
 
 namespace MyBarber.Data;
 
-public class ApplicationDbContext : IdentityDbContext
+public class ApplicationDbContext : DbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) {}
     

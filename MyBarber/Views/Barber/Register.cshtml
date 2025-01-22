@@ -1,0 +1,28 @@
+﻿@model MyBarber.ViewModels.BarberRegisterViewModel
+
+<h2>Register as Barber</h2>
+<form method="post">
+    <label for="name">Name:</label>
+    <input type="text" name="Name" required />
+
+    <label for="email">Email:</label>
+    <input type="email" name="Email" required />
+
+    <label for="password">Password:</label>
+    <input type="password" name="Password" required />
+
+    <label for="location">Location:</label>
+    <input type="text" name="Location" required />
+
+    <label for="phone">Phone Number:</label>
+    <input type="tel" name="PhoneNumber" required />
+
+    <label for="pricing">Pricing:</label>
+    <input type="number" name="Pricing" step="0.01" required />
+
+    <label for="services">Services:</label>
+    <textarea name="Services"></textarea>
+
+    <button type="submit">Register</button>
+</form>
+
