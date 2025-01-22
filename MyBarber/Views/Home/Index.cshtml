@@ -12,3 +12,48 @@
         @TempData["LoginMessage"]
     </div>
 }
+@model IEnumerable<MyBarber.Models.Barber>
+
+<h2>Top Barbers</h2>
+
+<div class="barber-list">
+    @foreach (var barber in Model)
+    {
+        <div class="barber-card">
+            <h3>@barber.Name</h3>
+            <p><strong>Location:</strong> @barber.Location</p>
+            <p><strong>Rating:</strong> @barber.Rating</p>
+            <p><strong>Services:</strong> @barber.Services</p>
+            <a href="/Barber/Details/@barber.Id">View Profile</a>
+        </div>
+    }
+</div>
+<style>
+    .barber-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .barber-card {
+        border: 1px solid #ddd;
+        padding: 15px;
+        border-radius: 5px;
+        width: 300px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .barber-card h3 {
+        margin-top: 0;
+    }
+
+    .barber-card a {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    .barber-card a:hover {
+        text-decoration: underline;
+    }
+</style>
+

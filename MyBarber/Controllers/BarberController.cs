@@ -97,7 +97,37 @@ namespace MyBarber.Controllers
             var barber = _context.Barbers.FirstOrDefault(b => b.Id == barberId);
             return View(barber);
         }
+        [HttpGet("Details/{id}")]
+        public IActionResult Details(int id)
+        {
+            var barber = _context.Barbers.FirstOrDefault(b => b.Id == id);
+            if (barber == null)
+            {
+                return NotFound();
+            }
+
+            return View(barber);
+        }
+        [HttpGet("Search")]
+        public IActionResult Search(string location, string service, double? minRating)
+        {
+            var barbers = _context.Barbers.AsQueryable();
+
+            if (!string.IsNullOrEmpty(location))
+                barbers = barbers.Where(b => b.Location.Contains(location));
+
+            if (!string.IsNullOrEmpty(service))
+                barbers = barbers.Where(b => b.Services.Contains(service));
+
+            if (minRating.HasValue)
+                barbers = barbers.Where(b => b.Rating >= minRating);
+
+            return View(barbers.ToList());
+        }
 
     }
+
+
+}
 
 }
