@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
 using MyBarber.Data;
 using MyBarber.Models;
 using MyBarber.ViewModels;
@@ -36,9 +39,7 @@ namespace MyBarber.Controllers
 
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
-                HttpContext.Session.SetInt32("UserId", user.Id);
-                HttpContext.Session.SetString("UserName", user.Name);
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Login");
             }
             return View(model);
         }
@@ -50,37 +51,42 @@ namespace MyBarber.Controllers
         }
 
         [HttpPost("Login")]
-        public IActionResult Login(UserLoginViewModel model)
+        public async Task<IActionResult> Login(UserLoginViewModel model)
         {
             var user = _context.Users.FirstOrDefault(u => u.Email == model.Email);
             if (user != null && BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash))
             {
-                HttpContext.Session.SetInt32("UserId", user.Id);
-                HttpContext.Session.SetString("UserName", user.Name);
-                TempData["LoginMessage"] = "Welcome back, " + user.Name + "!";
+                // Create claims for the user
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), // User ID
+                    new Claim(ClaimTypes.Name, user.Email), // User email
+                };
+
+                // Create claims identity
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                // Sign in the user
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(claimsIdentity),
+                    new AuthenticationProperties
+                    {
+                        IsPersistent = model.RememberMe // Set "Remember Me" to persist cookies
+                    });
+
+                // Redirect to the dashboard after successful login
                 return RedirectToAction("Index", "Home");
             }
 
+            // If login fails, add an error to the model state
             ModelState.AddModelError(string.Empty, "Invalid login attempt");
             return View(model);
         }
-        [Route("MyAccount")]
-        public IActionResult MyAccount()
+        public async Task<IActionResult> Logout()
         {
-            var userId = HttpContext.Session.GetInt32("UserId");
-            if (userId == null)
-            {
-                return RedirectToAction("Login");
-            }
-
-            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
-            if (user == null)
-            {
-                return RedirectToAction("Login");
-            }
-
-            return View(user);
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login");
         }
-
     }
 }
