@@ -43,6 +43,7 @@ namespace MyBarber.Controllers
                 await _context.SaveChangesAsync();
                 HttpContext.Session.SetInt32("BarberId", barber.Id);
                 HttpContext.Session.SetString("BarberName", barber.Name);
+                TempData["LoginMessage"] = "Welcome to the platform, " + barber.Name + "!";
 
                 // Redirect to My Account page
                 return RedirectToAction("Index", "Home");
