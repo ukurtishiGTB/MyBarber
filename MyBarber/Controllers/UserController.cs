@@ -41,6 +41,7 @@ namespace MyBarber.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Login");
             }
+
             return View(model);
         }
 
@@ -53,14 +54,38 @@ namespace MyBarber.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> Login(UserLoginViewModel model)
         {
+            // Check if the user exists in the database
             var user = _context.Users.FirstOrDefault(u => u.Email == model.Email);
-            if (user != null && BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash))
+
+            if (user == null)
             {
+                ModelState.AddModelError(string.Empty, "Invalid email or password.");
+                return View(model); // Return to the view if the user doesn't exist
+            }
+
+            // Verify the password
+            if (!BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash))
+            {
+                ModelState.AddModelError(string.Empty, "Invalid email or password.");
+                return View(model);
+            }
+
+            try
+            {
+                // Validate UserId before storing in session
+                if (user.Id <= 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(user.Id), "User ID is out of the valid range.");
+                }
+
+                // Store UserId in session
+                HttpContext.Session.SetInt32("UserId", user.Id);
+
                 // Create claims for the user
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), // User ID
-                    new Claim(ClaimTypes.Name, user.Email), // User email
+                    new Claim(ClaimTypes.Name, user.Email) // User email
                 };
 
                 // Create claims identity
@@ -75,16 +100,47 @@ namespace MyBarber.Controllers
                         IsPersistent = model.RememberMe // Set "Remember Me" to persist cookies
                     });
 
+                Console.WriteLine($"Logging in user with ID: {user?.Id}, Email: {user?.Email}");
                 // Redirect to the dashboard after successful login
                 return RedirectToAction("Index", "Home");
             }
-
-            // If login fails, add an error to the model state
-            ModelState.AddModelError(string.Empty, "Invalid login attempt");
-            return View(model);
+            catch (ArgumentOutOfRangeException ex)
+            {
+                // Log the error for debugging
+                Console.WriteLine($"Error during login: {ex.Message}");
+                ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again later.");
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                // Catch any other unexpected errors
+                Console.WriteLine($"Unexpected error during login: {ex.Message}");
+                ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again later.");
+                return View(model);
+            }
         }
+
+        [Route("MyAccount")]
+        public IActionResult MyAccount()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+            if (user == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            return View(user);
+        }
+
         public async Task<IActionResult> Logout()
         {
+            HttpContext.Session.Clear(); // Clear all session data
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login");
         }

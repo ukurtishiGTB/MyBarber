@@ -14,6 +14,20 @@ namespace MyBarber.Controllers
         {
             _context = context;
         }
+        public IActionResult Index()
+        {
+            var barbers = _context.Barbers
+                .Select(b => new BarberListViewModel
+                {
+                    Id = b.Id,
+                    Name = b.Name,
+                    Location = b.Location,
+                    PhoneNumber = b.PhoneNumber
+                })
+                .ToList();
+
+            return View(barbers);
+        }
 
         [HttpGet("Register")]
         public IActionResult Register()

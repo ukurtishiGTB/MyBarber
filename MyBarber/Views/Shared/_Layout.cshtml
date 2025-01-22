@@ -32,7 +32,8 @@
                     @if (ViewContext.HttpContext.Session.GetInt32("UserId") != null)
                       {
                         <!-- Show for logged-in User -->
-							<li><a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="MyAccount">My Account</a></li>
+                        <li><a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="MyAccount">My Account</a></li>
+                        <li><a class="nav-link text-dark" asp-area="" asp-controller="Barber" asp-action="Index">Barbers</a></li>
                       }
                       else if (ViewContext.HttpContext.Session.GetInt32("BarberId") != null)
                       {

@@ -31,15 +31,14 @@ public class AppointmentController : Controller
             "03:00 PM"
         };
     }
-
-    private string GetCurrentUserId()
+    private int GetCurrentUserId()
     {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (string.IsNullOrEmpty(userId))
+        var userId = HttpContext.Session.GetInt32("UserId");
+        if (userId == null)
         {
             throw new UnauthorizedAccessException("User is not authenticated.");
         }
-        return userId;
+        return userId.Value; // Since GetInt32 returns a nullable int
     }
 
     public IActionResult Book(int barberId, DateTime date)
@@ -58,6 +57,12 @@ public class AppointmentController : Controller
         // Filter out booked time slots
         var availableTimeSlots = allTimeSlots.Except(existingAppointments).ToList();
 
+        // Ensure availableTimeSlots is not null
+        if (availableTimeSlots == null || !availableTimeSlots.Any())
+        {
+            availableTimeSlots = new List<DateTime>(); // Initialize to an empty list
+        }
+
         // Pass the available slots to the view
         var viewModel = new AppointmentBookingViewModel
         {
@@ -74,8 +79,14 @@ public class AppointmentController : Controller
     {
         if (!ModelState.IsValid)
         {
+            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                Console.WriteLine(error.ErrorMessage); // Log the error message
+            }
             return View(model); // Return validation errors to the user
         }
+
+        var userId = GetCurrentUserId(); // Ensure session is valid
 
         // Ensure the selected time slot is valid
         var validTimeSlots = GetAllTimeSlots()
@@ -90,7 +101,7 @@ public class AppointmentController : Controller
 
         var appointment = new Appointment
         {
-            UserId = int.Parse(GetCurrentUserId()),
+            UserId = userId, // Use session UserId
             BarberId = model.BarberId,
             AppointmentDate = model.SelectedTimeSlot,
             Status = AppointmentStatus.Pending
@@ -101,7 +112,6 @@ public class AppointmentController : Controller
 
         return RedirectToAction("Confirmation");
     }
-
     public IActionResult Confirmation()
     {
         return View();
