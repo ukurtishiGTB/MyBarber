@@ -1,0 +1,35 @@
+@model List<Appointment>
+
+<h2>Manage Appointments</h2>
+<table>
+    <thead>
+    <tr>
+        <th>User</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var appointment in Model)
+    {
+        <tr>
+            <td>@appointment.User.Name</td>
+            <td>@appointment.AppointmentDate.ToString("yyyy-MM-dd")</td>
+            <td>@appointment.AppointmentDate.ToString("hh:mm tt")</td>
+            <td>@appointment.Status</td>
+            <td>
+                <form asp-action="Accepted" method="post">
+                    <input type="hidden" name="appointmentId" value="@appointment.Id" />
+                    <button type="submit">Accept</button>
+                </form>
+                <form asp-action="Rejected" method="post">
+                    <input type="hidden" name="appointmentId" value="@appointment.Id" />
+                    <button type="submit">Reject</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

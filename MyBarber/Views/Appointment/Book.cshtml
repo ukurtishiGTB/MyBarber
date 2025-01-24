@@ -1,0 +1,13 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model MyBarber.ViewModels.AppointmentBookingViewModel
+
+<h2>Book Appointment</h2>
+<form asp-action="Book" method="post">
+    <input type="hidden" asp-for="BarberId" />
+    <input type="hidden" asp-for="Date" />
+    <label for="SelectedTimeSlot">Available Time Slots:</label>
+    <select asp-for="SelectedTimeSlot" asp-items="@(new SelectList(Model.AvailableTimeSlots.Select(slot => new { Value = slot, Text = slot.ToString("hh:mm tt") }), "Value", "Text"))">
+        <option value="">Select a time slot</option>
+    </select>
+    <button type="submit">Book Appointment</button>
+</form>

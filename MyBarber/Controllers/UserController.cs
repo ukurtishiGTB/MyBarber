@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
 using MyBarber.Data;
 using MyBarber.Models;
 using MyBarber.ViewModels;
@@ -36,10 +39,9 @@ namespace MyBarber.Controllers
 
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
-                HttpContext.Session.SetInt32("UserId", user.Id);
-                HttpContext.Session.SetString("UserName", user.Name);
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Login");
             }
+
             return View(model);
         }
 
@@ -50,20 +52,74 @@ namespace MyBarber.Controllers
         }
 
         [HttpPost("Login")]
-        public IActionResult Login(UserLoginViewModel model)
+        public async Task<IActionResult> Login(UserLoginViewModel model)
         {
+            // Check if the user exists in the database
             var user = _context.Users.FirstOrDefault(u => u.Email == model.Email);
-            if (user != null && BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash))
+
+            if (user == null)
             {
-                HttpContext.Session.SetInt32("UserId", user.Id);
-                HttpContext.Session.SetString("UserName", user.Name);
-                TempData["LoginMessage"] = "Welcome back, " + user.Name + "!";
-                return RedirectToAction("Index", "Home");
+                ModelState.AddModelError(string.Empty, "Invalid email or password.");
+                return View(model); // Return to the view if the user doesn't exist
             }
 
-            ModelState.AddModelError(string.Empty, "Invalid login attempt");
-            return View(model);
+            // Verify the password
+            if (!BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash))
+            {
+                ModelState.AddModelError(string.Empty, "Invalid email or password.");
+                return View(model);
+            }
+
+            try
+            {
+                // Validate UserId before storing in session
+                if (user.Id <= 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(user.Id), "User ID is out of the valid range.");
+                }
+
+                // Store UserId in session
+                HttpContext.Session.SetInt32("UserId", user.Id);
+
+                // Create claims for the user
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), // User ID
+                    new Claim(ClaimTypes.Name, user.Email) // User email
+                };
+
+                // Create claims identity
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                // Sign in the user
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(claimsIdentity),
+                    new AuthenticationProperties
+                    {
+                        IsPersistent = model.RememberMe // Set "Remember Me" to persist cookies
+                    });
+
+                Console.WriteLine($"Logging in user with ID: {user?.Id}, Email: {user?.Email}");
+                // Redirect to the dashboard after successful login
+                return RedirectToAction("Index", "Home");
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                // Log the error for debugging
+                Console.WriteLine($"Error during login: {ex.Message}");
+                ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again later.");
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                // Catch any other unexpected errors
+                Console.WriteLine($"Unexpected error during login: {ex.Message}");
+                ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again later.");
+                return View(model);
+            }
         }
+
         [Route("MyAccount")]
         public IActionResult MyAccount()
         {
@@ -92,5 +148,11 @@ namespace MyBarber.Controllers
         }
 
 
+        public async Task<IActionResult> Logout()
+        {
+            HttpContext.Session.Clear(); // Clear all session data
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login");
+        }
     }
 }

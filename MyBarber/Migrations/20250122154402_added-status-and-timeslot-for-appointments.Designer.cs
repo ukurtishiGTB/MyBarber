@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyBarber.Data;
 
@@ -11,9 +12,11 @@ using MyBarber.Data;
 namespace MyBarber.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250122154402_added-status-and-timeslot-for-appointments")]
+    partial class addedstatusandtimeslotforappointments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,14 +33,18 @@ namespace MyBarber.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("AppointmentDate")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("AppointmentDate")
+                        .HasColumnType("date");
 
                     b.Property<int>("BarberId")
                         .HasColumnType("int");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
+
+                    b.Property<string>("TimeSlot")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -97,47 +104,6 @@ namespace MyBarber.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Barbers");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Email = "test@gmail.com",
-                            HashPassword = "test",
-                            Location = "Cair",
-                            Name = "John Doe",
-                            PhoneNumber = "123-456-7890",
-                            Pricing = 20m,
-                            Rating = 0.0,
-                            Services = "Haircut",
-                            isActive = true
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Email = "test@gmail.com",
-                            HashPassword = "test",
-                            Location = "Cair",
-                            Name = "Jane Smith",
-                            PhoneNumber = "123-456-7890",
-                            Pricing = 20m,
-                            Rating = 0.0,
-                            Services = "Haircut",
-                            isActive = true
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Email = "test@gmail.com",
-                            HashPassword = "test",
-                            Location = "Cair",
-                            Name = "Mike Johnson",
-                            PhoneNumber = "123-456-7890",
-                            Pricing = 20m,
-                            Rating = 0.0,
-                            Services = "Haircut",
-                            isActive = true
-                        });
                 });
 
             modelBuilder.Entity("MyBarber.Models.LoyaltyProgram", b =>
