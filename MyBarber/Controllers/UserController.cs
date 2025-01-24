@@ -137,6 +137,16 @@ namespace MyBarber.Controllers
 
             return View(user);
         }
+        [Route("Dashboard")]
+        public IActionResult Dashboard()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null) return RedirectToAction("Login");
+
+            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+            return View(user);
+        }
+
 
         public async Task<IActionResult> Logout()
         {
