@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace MyBarber.Migrations
 {
     /// <inheritdoc />
@@ -18,13 +20,15 @@ namespace MyBarber.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    HashPassword = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Pricing = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ProfileImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Rating = table.Column<double>(type: "float", nullable: false),
-                    Services = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    isActive = table.Column<bool>(type: "bit", nullable: false)
+                    ProfileImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Rating = table.Column<double>(type: "float", nullable: true),
+                    Services = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    isActive = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -55,7 +59,8 @@ namespace MyBarber.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     BarberId = table.Column<int>(type: "int", nullable: false),
-                    AppointmentDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    AppointmentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -92,6 +97,16 @@ namespace MyBarber.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Barbers",
+                columns: new[] { "Id", "Email", "HashPassword", "Location", "Name", "PhoneNumber", "Pricing", "ProfileImage", "Rating", "Services", "isActive" },
+                values: new object[,]
+                {
+                    { 1, "test@gmail.com", "test", "Cair", "John Doe", "123-456-7890", 20m, null, 0.0, "Haircut", true },
+                    { 2, "test@gmail.com", "test", "Cair", "Jane Smith", "123-456-7890", 20m, null, 0.0, "Haircut", true },
+                    { 3, "test@gmail.com", "test", "Cair", "Mike Johnson", "123-456-7890", 20m, null, 0.0, "Haircut", true }
                 });
 
             migrationBuilder.CreateIndex(

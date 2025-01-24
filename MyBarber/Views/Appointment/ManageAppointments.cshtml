@@ -1,0 +1,144 @@
+@model List<Appointment>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Appointments</title>
+
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            padding: 20px 0;
+        }
+
+        /* Table Styles */
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color:white;
+            color: black;
+            font-size: 16px;
+        }
+
+        td {
+            background-color: #f9f9f9;
+        }
+
+        /* Row Hover Effect */
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Action Buttons */
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        /* Reject Button Style */
+        button.reject {
+            background-color: #f44336; /* Red */
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        button.reject:hover {
+            background-color: #e53935; /* Darker red on hover */
+        }
+
+        button.reject:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        /* Form Styles */
+        form {
+            display: inline-block;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Manage Appointments</h2>
+<table>
+    <thead>
+    <tr>
+        <th>User</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var appointment in Model)
+    {
+        <tr>
+            <td>@appointment.User.Name</td>
+            <td>@appointment.AppointmentDate.ToString("yyyy-MM-dd")</td>
+            <td>@appointment.AppointmentDate.ToString("hh:mm tt")</td>
+            <td>@appointment.Status</td>
+            <td>
+                <form asp-action="Accepted" method="post">
+                    <input type="hidden" name="appointmentId" value="@appointment.Id" />
+                    <button type="submit">Accept</button>
+                </form>
+                <form asp-action="Rejected" method="post">
+                    <input type="hidden" name="appointmentId" value="@appointment.Id" />
+                    <button class="reject" type="submit">Reject</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+</body>
+</html>
