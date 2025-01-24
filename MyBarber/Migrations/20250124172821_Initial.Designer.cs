@@ -12,8 +12,8 @@ using MyBarber.Data;
 namespace MyBarber.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250122224319_seed-barbers")]
-    partial class seedbarbers
+    [Migration("20250124172821_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

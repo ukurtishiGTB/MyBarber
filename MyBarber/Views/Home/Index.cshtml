@@ -3,15 +3,17 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Welcome To MyBarber</h1>
+    <p>Book your haircut now and be happy after :)</p>
 </div>
+
 @if (TempData["LoginMessage"] != null)
 {
     <div class="alert alert-success">
         @TempData["LoginMessage"]
     </div>
 }
+
 @model IEnumerable<MyBarber.Models.Barber>
 
 <h2>Top Barbers</h2>
@@ -49,12 +51,12 @@
     }
 
     .barber-card a {
-        color: #007bff;
-        text-decoration: none;
+        color: #000000;
+        text-decoration: underline; /* Shtoni vijën nën lidhje */
     }
 
     .barber-card a:hover {
-        text-decoration: underline;
+        text-decoration: none; /* Hiqni vijën kur është në hover */
+        color: #007bff; /* Ndryshoni ngjyrën në blu kur kalon mbi të */
     }
 </style>
-
