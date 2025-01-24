@@ -147,28 +147,28 @@ namespace MyBarber.Controllers
             return View(user);
         }
 
+        //[HttpPost]
+        //public IActionResult Logout()
+        //{
+        //    try
+        //    {
+        //        HttpContext.Session.Clear();
+        //        return RedirectToAction("Index", "Home");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Log the exception or return an error message
+        //        Console.WriteLine($"Error during logout: {ex.Message}");
+        //        return RedirectToAction("Error", "Home"); // Redirect to an error page
+        //    }
+        //}
+
         [HttpPost]
-        public IActionResult Logout()
-        {
-            try
-            {
-                HttpContext.Session.Clear();
-                return RedirectToAction("Index", "Home");
-            }
-            catch (Exception ex)
-            {
-                // Log the exception or return an error message
-                Console.WriteLine($"Error during logout: {ex.Message}");
-                return RedirectToAction("Error", "Home"); // Redirect to an error page
-            }
-        }
-
-
         public async Task<IActionResult> Logout()
         {
             HttpContext.Session.Clear(); // Clear all session data
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Login");
+            return RedirectToAction("Index","Home");
         }
     }
 }
