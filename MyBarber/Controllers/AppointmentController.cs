@@ -119,15 +119,20 @@ public class AppointmentController : Controller
 
     public IActionResult ManageAppointments(int barberId)
     {
-        // Fetch appointments for the specified barber and include the related User entity
+        var loggedInBarberId = HttpContext.Session.GetInt32("BarberId");
+        if (loggedInBarberId == null || loggedInBarberId != barberId)
+        {
+            return RedirectToAction("Login", "Barber"); // Ridrejto nëse sesioni është null
+        }
+
         var pendingAppointments = _dbContext.Appointments
-            .Where(a => a.BarberId == barberId) // Filter by BarberId
-            .Include(a => a.User) // Include the User entity for display
+            .Where(a => a.BarberId == barberId)
+            .Include(a => a.User)
             .ToList();
 
         return View(pendingAppointments);
     }
-    
+
 
     [HttpPost]
     public IActionResult Accepted(int appointmentId)

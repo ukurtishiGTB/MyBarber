@@ -13,14 +13,22 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Sesioni do të zgjasë 30 minuta
+    options.Cookie.HttpOnly = true; // Vetëm për serverin
+    options.Cookie.IsEssential = true; // E domosdoshme për GDPR
+});
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/Account/Login"; // Redirect to this path if not authenticated
+        options.LoginPath = "/Barber/Login"; // Rruga e saktë për login-in e barberëve
     });
 
+
 builder.Services.AddAuthorization();
-builder.Services.AddSession();
+
+
 
 var app = builder.Build();
 
@@ -35,10 +43,10 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
-
+app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseSession();
+
 
 app.MapStaticAssets();
 
