@@ -33,6 +33,16 @@
                       {
                         <!-- Show for logged-in User -->
 							<li><a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="MyAccount">My Account</a></li>
+                            <li>
+                                @if (ViewContext.HttpContext.Session.GetInt32("UserId") != null || ViewContext.HttpContext.Session.GetInt32("BarberId") != null)
+                                {
+                                    <form method="post" asp-controller="User" asp-action="Logout" style="display: inline;">
+                                        <button type="submit" class="nav-link text-danger" style="background: none; border: none; padding: 0; cursor: pointer;">
+                                            Logout
+                                        </button>
+                                    </form>
+                                }
+                            </li>
                       }
                       else if (ViewContext.HttpContext.Session.GetInt32("BarberId") != null)
                       {
@@ -78,4 +88,7 @@
 <script src="~/js/site.js" asp-append-version="true"></script>
 @await RenderSectionAsync("Scripts", required: false)
 </body>
+@inject IHttpContextAccessor HttpContextAccessor
+
+
 </html>

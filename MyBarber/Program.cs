@@ -5,6 +5,7 @@ using MyBarber.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHttpContextAccessor();
 
 
 // Add services to the container.
@@ -16,6 +17,9 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(30); // Session timeout
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Session timeout
+    options.Cookie.HttpOnly = true; // Secure cookies
+    options.Cookie.IsEssential = true; // Required for GDPR compliance
 });
 var app = builder.Build();
 

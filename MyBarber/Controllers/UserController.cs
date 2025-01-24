@@ -91,6 +91,22 @@ namespace MyBarber.Controllers
             return View(user);
         }
 
+        [HttpPost]
+        public IActionResult Logout()
+        {
+            try
+            {
+                HttpContext.Session.Clear();
+                return RedirectToAction("Index", "Home");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or return an error message
+                Console.WriteLine($"Error during logout: {ex.Message}");
+                return RedirectToAction("Error", "Home"); // Redirect to an error page
+            }
+        }
+
 
     }
 }
