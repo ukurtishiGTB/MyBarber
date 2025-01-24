@@ -119,13 +119,15 @@ public class AppointmentController : Controller
 
     public IActionResult ManageAppointments(int barberId)
     {
+        // Fetch appointments for the specified barber and include the related User entity
         var pendingAppointments = _dbContext.Appointments
-            .Where(a => a.BarberId == barberId && a.Status == AppointmentStatus.Pending)
-            .Include(a => a.User) // Include User data for display
+            .Where(a => a.BarberId == barberId) // Filter by BarberId
+            .Include(a => a.User) // Include the User entity for display
             .ToList();
 
         return View(pendingAppointments);
     }
+    
 
     [HttpPost]
     public IActionResult Accepted(int appointmentId)
