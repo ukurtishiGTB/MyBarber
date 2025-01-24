@@ -116,9 +116,14 @@ public class AppointmentController : Controller
     {
         return View();
     }
-
+    [Authorize]
     public IActionResult ManageAppointments(int barberId)
     {
+        barberId = HttpContext.Session.GetInt32("BarberId") ?? barberId;
+        if (barberId == 0)
+        {
+            return RedirectToAction("Login", "Barber"); // Redirect if barberId is missing
+        }
         // Fetch appointments for the specified barber and include the related User entity
         var pendingAppointments = _dbContext.Appointments
             .Where(a => a.BarberId == barberId) // Filter by BarberId
