@@ -25,4 +25,8 @@ public class HomeController : Controller
 
         return View(barbers);
     }
+    public IActionResult RegisterChoice()
+    {
+        return View();
+    }
 }
