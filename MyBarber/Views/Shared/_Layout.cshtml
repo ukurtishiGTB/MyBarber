@@ -49,12 +49,19 @@
                             </li>
 
                        }
+                       <li> 
+                           <form method="get" action="/Barber/Search" style="position: absolute; right: 20px; top: 15px;">
+                            <input type="text" name="query" placeholder="Search barbers..." />
+                            <button type="submit">Search</button>
+                           </form>
+                       </li>
                    
                 </ul>
             </div>
         </div>
     </nav>
 </header>
+
 <div class="container">
     <main role="main" class="pb-3">
         @RenderBody()

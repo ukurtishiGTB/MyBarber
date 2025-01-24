@@ -109,25 +109,28 @@ namespace MyBarber.Controllers
             return View(barber);
         }
         [HttpGet("Search")]
-        public IActionResult Search(string location, string service, double? minRating)
+        public IActionResult Search(string query)
         {
             var barbers = _context.Barbers.AsQueryable();
 
-            if (!string.IsNullOrEmpty(location))
-                barbers = barbers.Where(b => b.Location.Contains(location));
-
-            if (!string.IsNullOrEmpty(service))
-                barbers = barbers.Where(b => b.Services.Contains(service));
-
-            if (minRating.HasValue)
-                barbers = barbers.Where(b => b.Rating >= minRating);
+            if (!string.IsNullOrEmpty(query))
+            {
+                // Search by multiple fields using a single query
+                barbers = barbers.Where(b =>
+                    b.Name.Contains(query) ||               // Search by barber name
+                    b.Location.Contains(query) ||           // Search by location
+                    b.Services.Contains(query) ||           // Search by services
+                    b.Rating.ToString().Contains(query)     // Search by rating (optional for numeric input)
+                );
+            }
 
             return View(barbers.ToList());
         }
+
+
 
     }
 
 
 }
 
-}
