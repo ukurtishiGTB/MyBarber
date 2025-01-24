@@ -1,0 +1,52 @@
+﻿@model IEnumerable<MyBarber.Models.Barber>
+
+<h2>Search for Barbers</h2>
+
+<!-- Search Form -->
+<form method="get" action="/Barber/Search">
+    <div>
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" placeholder="Enter city or area" />
+    </div>
+    <div>
+        <label for="service">Service:</label>
+        <input type="text" id="service" name="service" placeholder="Enter service (e.g., haircut)" />
+    </div>
+    <div>
+        <label for="minRating">Minimum Rating:</label>
+        <select id="minRating" name="minRating">
+            <option value="">--Select Rating--</option>
+            <option value="1">1 Star</option>
+            <option value="2">2 Stars</option>
+            <option value="3">3 Stars</option>
+            <option value="4">4 Stars</option>
+            <option value="5">5 Stars</option>
+        </select>
+    </div>
+    <button type="submit">Search</button>
+</form>
+
+<hr />
+
+<!-- Display Search Results -->
+@if (Model != null && Model.Any())
+{
+    <h3>Search Results:</h3>
+    <div>
+        @foreach (var barber in Model)
+        {
+            <div class="barber-card">
+                <h4>@barber.Name</h4>
+                <p><strong>Location:</strong> @barber.Location</p>
+                <p><strong>Rating:</strong> @barber.Rating</p>
+                <p><strong>Services:</strong> @barber.Services</p>
+                <a href="/Barber/Details/@barber.Id">View Profile</a>
+            </div>
+            <hr />
+        }
+    </div>
+}
+else
+{
+    <p>No barbers found matching your criteria.</p>
+}

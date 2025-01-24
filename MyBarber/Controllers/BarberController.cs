@@ -88,7 +88,49 @@ namespace MyBarber.Controllers
 
             return View(barber);
         }
+        [Route("Dashboard")]
+        public IActionResult Dashboard()
+        {
+            var barberId = HttpContext.Session.GetInt32("BarberId");
+            if (barberId == null) return RedirectToAction("Login");
+
+            var barber = _context.Barbers.FirstOrDefault(b => b.Id == barberId);
+            return View(barber);
+        }
+        [HttpGet("Details/{id}")]
+        public IActionResult Details(int id)
+        {
+            var barber = _context.Barbers.FirstOrDefault(b => b.Id == id);
+            if (barber == null)
+            {
+                return NotFound();
+            }
+
+            return View(barber);
+        }
+        [HttpGet("Search")]
+        public IActionResult Search(string query)
+        {
+            var barbers = _context.Barbers.AsQueryable();
+
+            if (!string.IsNullOrEmpty(query))
+            {
+                // Search by multiple fields using a single query
+                barbers = barbers.Where(b =>
+                    b.Name.Contains(query) ||               // Search by barber name
+                    b.Location.Contains(query) ||           // Search by location
+                    b.Services.Contains(query) ||           // Search by services
+                    b.Rating.ToString().Contains(query)     // Search by rating (optional for numeric input)
+                );
+            }
+
+            return View(barbers.ToList());
+        }
+
+
 
     }
 
+
 }
+
