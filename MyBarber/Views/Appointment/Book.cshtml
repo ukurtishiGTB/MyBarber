@@ -3,11 +3,50 @@
 
 <h2>Book Appointment</h2>
 <form asp-action="Book" method="post">
-    <input type="hidden" asp-for="BarberId" />
-    <input type="hidden" asp-for="Date" />
-    <label for="SelectedTimeSlot">Available Time Slots:</label>
-    <select asp-for="SelectedTimeSlot" asp-items="@(new SelectList(Model.AvailableTimeSlots.Select(slot => new { Value = slot, Text = slot.ToString("hh:mm tt") }), "Value", "Text"))">
-        <option value="">Select a time slot</option>
-    </select>
-    <button type="submit">Book Appointment</button>
+    <input type="hidden" name="BarberId" value="@Model.BarberId" />
+
+    <div>
+        <label for="date">Select a Date:</label>
+        <select id="date" name="Date" class="form-control" required>
+            @foreach (var date in Model.AvailableDates)
+            {
+                <option value="@date.ToString("yyyy-MM-dd")">@date.ToString("dddd, MMMM dd")</option>
+            }
+        </select>
+    </div>
+
+    <div>
+        <label for="timeSlot">Select a Time Slot:</label>
+        <select id="timeSlot" name="SelectedTimeSlot" class="form-control" required>
+            @if (Model.AvailableTimeSlots != null)
+            {
+                foreach (var timeSlot in Model.AvailableTimeSlots)
+                {
+                    <option value="@timeSlot">@timeSlot.ToString("hh:mm tt")</option>
+                }
+            }
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Book Appointment</button>
 </form>
+<script>
+    document.getElementById("date").addEventListener("change", function () {
+        const selectedDate = this.value;
+
+        // Make an AJAX request to fetch time slots
+        fetch(`/Appointment/GetTimeSlots?date=${selectedDate}&barberId=${@Model.BarberId}`)
+            .then(response => response.json())
+            .then(data => {
+                const timeSlotDropdown = document.getElementById("timeSlot");
+                timeSlotDropdown.innerHTML = ""; // Clear existing options
+
+                data.forEach(timeSlot => {
+                    const option = document.createElement("option");
+                    option.value = timeSlot;
+                    option.textContent = timeSlot;
+                    timeSlotDropdown.appendChild(option);
+                });
+            });
+    });
+</script>
