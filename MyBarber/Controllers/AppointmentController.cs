@@ -8,7 +8,7 @@ using MyBarber.ViewModels;
 
 namespace MyBarber.Controllers;
 
-[Authorize] // Ensure all actions in this controller require authentication
+// Ensure all actions in this controller require authentication
 public class AppointmentController : Controller
 {
     private readonly ApplicationDbContext _dbContext;
@@ -185,11 +185,9 @@ public IActionResult Book(AppointmentBookingViewModel model)
     {
         return View();
     }
-
-    [Authorize]
-    public IActionResult ManageAppointments(int barberId)
+    public IActionResult ManageAppointments()
     {
-        barberId = HttpContext.Session.GetInt32("BarberId") ?? barberId;
+        var barberId = HttpContext.Session.GetInt32("BarberId");
         if (barberId == 0)
         {
             return RedirectToAction("Login", "Barber"); // Redirect if barberId is missing
