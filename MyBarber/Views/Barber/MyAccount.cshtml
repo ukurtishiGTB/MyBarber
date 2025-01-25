@@ -1,69 +1,128 @@
 ﻿@model MyBarber.Models.Barber
 
-<div class="account-container">
-    <h2 class="account-title">My Account</h2>
-    <div class="account-details">
-        <p><strong>Name:</strong> @Model.Name</p>
-        <p><strong>Email:</strong> @Model.Email</p>
-        <p><strong>Location:</strong> @Model.Location</p>
-        <p><strong>Phone Number:</strong> @Model.PhoneNumber</p>
-        <p><strong>Pricing:</strong> @Model.Pricing</p>
-        <p><strong>Services:</strong> @Model.Services</p>
+<div class="profile-container">
+    <div class="profile-sidebar">
+        <img src="https://via.placeholder.com/150" alt="Profile Picture" class="profile-pic">
+        <h3>@Model.Name</h3>
+        <p class="profile-bio">Expert barber with over 5 years of experience. Passionate about creating unique styles!</p>
     </div>
-    <a href="" class="edit-button">Edit Account</a>
+    <div class="account-container">
+        <span class="badge">Premium Barber</span>
+        <h2 class="account-title">My Account</h2>
+        <div class="account-details">
+            <p><i class="fa fa-user"></i> <strong>Name:</strong> @Model.Name</p>
+            <p><i class="fa fa-envelope"></i> <strong>Email:</strong> @Model.Email</p>
+            <p><i class="fa fa-map-marker"></i> <strong>Location:</strong> @Model.Location</p>
+            <p><i class="fa fa-phone"></i> <strong>Phone Number:</strong> @Model.PhoneNumber</p>
+            <p><i class="fa fa-dollar-sign"></i> <strong>Pricing:</strong> @Model.Pricing</p>
+            <p><i class="fa fa-cut"></i> <strong>Services:</strong> @Model.Services</p>
+        </div>
+        <a href="#" class="edit-button">Edit Account</a>
+    </div>
 </div>
 
 <style>
-    .account-container {
-        max-width: 600px;
-        margin: 30px auto;
+ 
+
+    body {
+        background: linear-gradient(135deg, #e0f7fa, #ffffff);
+        font-family: 'Inter', sans-serif;
+        margin: 0;
         padding: 20px;
-        border: 1px solid #ddd;
-        border-radius: 10px;
+    }
+
+    .profile-container {
+        display: flex;
+        max-width: 900px;
+        margin: 40px auto;
+        gap: 20px;
+    }
+
+    .profile-sidebar {
+        flex: 1;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        text-align: center;
+    }
+
+    .profile-pic {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        margin-bottom: 15px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        background-color: #f9f9f9;
-        font-family: Arial, sans-serif;
+    }
+
+    .profile-bio {
+        font-size: 0.9rem;
+        color: #555;
+        margin-top: 10px;
+        line-height: 1.5;
+    }
+
+    .account-container {
+        flex: 2;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+
+    .badge {
+        display: inline-block;
+        background-color: #ff9800;
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        margin-bottom: 15px;
     }
 
     .account-title {
         text-align: center;
         font-size: 1.8rem;
-        color: #333;
+        color: #222;
         margin-bottom: 20px;
+        font-weight: 600;
     }
 
     .account-details p {
         font-size: 1rem;
-        color: #555;
-        line-height: 1.6;
-        padding: 10px 0;
-        margin: 0;
-        border-bottom: 1px solid #ddd; /* Vijat ndarëse për çdo rresht */
+        color: #444;
+        line-height: 1.8;
+        margin: 0 0 10px 0;
+        padding: 8px 0;
+        border-bottom: 1px solid #ddd;
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
 
-    .account-details p:last-child {
-        border-bottom: none; /* Hiq vijën e fundit për estetikë */
-    }
-
-    .account-details strong {
-        color: #000;
+    .account-details p i {
+        color: #007bff;
+        font-size: 1.2rem;
     }
 
     .edit-button {
         display: block;
-        width: 100%;
         text-align: center;
         margin-top: 20px;
-        padding: 10px;
-        background-color: #007bff;
+        padding: 12px;
+        background: linear-gradient(90deg, #007bff, #0056b3);
         color: #fff;
         text-decoration: none;
-        border-radius: 5px;
+        border-radius: 8px;
         font-size: 1rem;
-        transition: background-color 0.3s ease;
+        font-weight: 600;
+        box-shadow: 0 4px 6px rgba(0, 123, 255, 0.2);
+        transition: all 0.3s ease;
     }
 
     .edit-button:hover {
-        background-color: #0056b3;
+        background: linear-gradient(90deg, #0056b3, #004099);
+        transform: scale(1.02);
+        box-shadow: 0 6px 8px rgba(0, 123, 255, 0.3);
     }
 </style>
