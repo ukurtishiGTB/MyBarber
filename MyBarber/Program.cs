@@ -15,19 +15,18 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30); // Sesioni do të zgjasë 30 minuta
-    options.Cookie.HttpOnly = true; // Vetëm për serverin
-    options.Cookie.IsEssential = true; // E domosdoshme për GDPR
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
 });
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/Barber/Login"; // Rruga e saktë për login-in e barberëve
+        options.LoginPath = "/Barber/Login"; // Redirect to this path if not authenticated
     });
 
 
 builder.Services.AddAuthorization();
-
 
 
 var app = builder.Build();
@@ -49,6 +48,10 @@ app.UseAuthorization();
 
 
 app.MapStaticAssets();
+app.MapControllerRoute(
+    name: "manageAppointments",
+    pattern: "Appointment/ManageAppointments/{barberId?}",
+    defaults: new { controller = "Appointment", action = "ManageAppointments" });
 
 app.MapControllerRoute(
         name: "default",

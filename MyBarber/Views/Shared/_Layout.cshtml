@@ -136,16 +136,17 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="RegisterChoice">Register</a>
                         </li>
                     }
+                    @if(ViewContext.HttpContext.Session.GetInt32("BarberId") != null)
+                    {
+                        <li><a class="nav-link text-dark" asp-controller="Appointment" asp-action="ManageAppointments" asp-route-barberId="@ViewContext.HttpContext.Session.GetInt32("BarberId")">My Appointments</a></li>
+                    }
                     <li style="list-style-type: none;" class="d-none d-sm-inline-block ms-3">
                         <form method="get" action="/Barber/Search" class="search-form">
                             <input type="text" name="query" placeholder="Search barbers..." />
                             <button type="submit">Search</button>
                         </form>
                     </li>
-                    @if(ViewContext.HttpContext.Session.GetInt32("BarberId") != null)
-                    {
-                        <li><a class="nav-link text-dark" asp-controller="Appointment" asp-action="ManageAppointments" asp-route-barberId="@ViewContext.HttpContext.Session.GetInt32("BarberId")">My Appointments</a></li>
-                    }
+                    
                 </ul>
             </div>
         </div>
