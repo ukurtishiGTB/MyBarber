@@ -48,7 +48,7 @@ namespace MyBarber.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Appointments");
+                    b.ToTable("Appointments", (string)null);
                 });
 
             modelBuilder.Entity("MyBarber.Models.Barber", b =>
@@ -96,7 +96,7 @@ namespace MyBarber.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Barbers");
+                    b.ToTable("Barbers", (string)null);
 
                     b.HasData(
                         new
@@ -137,6 +137,19 @@ namespace MyBarber.Migrations
                             Rating = 0.0,
                             Services = "Haircut",
                             isActive = true
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Email = "test@gmail.com",
+                            HashPassword = "test",
+                            Location = "Cair",
+                            Name = "Ubejd Kurtishi",
+                            PhoneNumber = "123-456-7890",
+                            Pricing = 20m,
+                            Rating = 0.0,
+                            Services = "Haircut",
+                            isActive = true
                         });
                 });
 
@@ -158,7 +171,7 @@ namespace MyBarber.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("LoyaltyPrograms");
+                    b.ToTable("LoyaltyPrograms", (string)null);
                 });
 
             modelBuilder.Entity("MyBarber.Models.User", b =>
@@ -186,7 +199,7 @@ namespace MyBarber.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("MyBarber.Models.Appointment", b =>
