@@ -1,10 +1,69 @@
 ﻿@model MyBarber.Models.Barber
 
-<h2>My Account</h2>
-<p><strong>Name:</strong> @Model.Name</p>
-<p><strong>Email:</strong> @Model.Email</p>
-<p><strong>Location:</strong> @Model.Location</p>
-<p><strong>Phone Number:</strong> @Model.PhoneNumber</p>
-<p><strong>Pricing:</strong> @Model.Pricing</p>
-<p><strong>Services:</strong> @Model.Services</p>
-<a href="">Edit Account</a>
+<div class="account-container">
+    <h2 class="account-title">My Account</h2>
+    <div class="account-details">
+        <p><strong>Name:</strong> @Model.Name</p>
+        <p><strong>Email:</strong> @Model.Email</p>
+        <p><strong>Location:</strong> @Model.Location</p>
+        <p><strong>Phone Number:</strong> @Model.PhoneNumber</p>
+        <p><strong>Pricing:</strong> @Model.Pricing</p>
+        <p><strong>Services:</strong> @Model.Services</p>
+    </div>
+    <a href="" class="edit-button">Edit Account</a>
+</div>
+
+<style>
+    .account-container {
+        max-width: 600px;
+        margin: 30px auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: #f9f9f9;
+        font-family: Arial, sans-serif;
+    }
+
+    .account-title {
+        text-align: center;
+        font-size: 1.8rem;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .account-details p {
+        font-size: 1rem;
+        color: #555;
+        line-height: 1.6;
+        padding: 10px 0;
+        margin: 0;
+        border-bottom: 1px solid #ddd; /* Vijat ndarëse për çdo rresht */
+    }
+
+    .account-details p:last-child {
+        border-bottom: none; /* Hiq vijën e fundit për estetikë */
+    }
+
+    .account-details strong {
+        color: #000;
+    }
+
+    .edit-button {
+        display: block;
+        width: 100%;
+        text-align: center;
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 1rem;
+        transition: background-color 0.3s ease;
+    }
+
+    .edit-button:hover {
+        background-color: #0056b3;
+    }
+</style>
