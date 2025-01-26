@@ -64,7 +64,7 @@
         /* Rregullimi i butonit */
         .search-form button {
             padding: 8px 15px;
-            border: 2px solid ;
+            border: 2px solid;
             background-color: #000000;
             color: white;
             font-size: 14px;
@@ -79,72 +79,82 @@
             transform: translateY(-2px); /* Efekti i lëvizjes kur kalon me maus */
         }
 
-            /* Efekti hover për formën e input-it */
-            .search-form:hover {
-                box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
-            }
+        /* Efekti hover për formën e input-it */
+        .search-form:hover {
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid d-flex align-items-center">
-                <!-- Emri i faqes dhe lidhjet -->
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MyBarber</a>
-                <div class="navbar-collapse collapse d-flex justify-content-between w-100">
-                    <ul class="navbar-nav flex-grow-1 d-flex align-items-center">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                       
-                        @if (ViewContext.HttpContext.Session.GetInt32("UserId") != null)
-                        {
-                            <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="MyAccount">My Account</a></li>
-                            <li><a method="GET" class="nav-link text-dark" asp-area="" asp-controller="Barber" asp-action="Index">Barbers</a></li>
+<header>
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <div class="container-fluid d-flex align-items-center">
+            <!-- Emri i faqes dhe lidhjet -->
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MyBarber</a>
+            <div class="navbar-collapse collapse d-flex justify-content-between w-100">
+                <ul class="navbar-nav flex-grow-1 d-flex align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                    </li>
 
-                        }
-                        else if (ViewContext.HttpContext.Session.GetInt32("BarberId") != null)
+                    @if (ViewContext.HttpContext.Session.GetInt32("UserId") != null)
+                    {
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="User"
+                                                asp-action="MyAccount">My Account</a></li>
+                        <li><a method="GET" class="nav-link text-dark" asp-area="" asp-controller="Barber"
+                               asp-action="Index">Barbers</a></li>
+                    }
+                    else if (ViewContext.HttpContext.Session.GetInt32("BarberId") != null)
+                    {
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Barber"
+                                                asp-action="Dashboard">Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Appointment"
+                                                asp-action="ManageAppointments">My Appointments</a></li>
+                    }
+                    else
+                    {
+                        <li class="nav-item"><a method="GET" class="nav-link text-dark" asp-area=""
+                                                asp-controller="Login" asp-action="Index">Login</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home"
+                                                asp-action="RegisterChoice">Register</a></li>
+                    }
+                    <li>
+                        @if (ViewContext.HttpContext.Session.GetInt32("UserId") != null || ViewContext.HttpContext.Session.GetInt32("BarberId") != null)
                         {
-                            <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Barber" asp-action="Dashboard">Dashboard</a></li>
-                            <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Appointment" asp-action="ManageAppointments">My Appointments</a></li>
-                        }
-                        else
-                        {
-                            <li class="nav-item"> <a method="GET" class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Index">Login</a></li>
-                            <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="RegisterChoice">Register</a></li>
-                        }
-                        <li>
-                            @if (ViewContext.HttpContext.Session.GetInt32("UserId") != null || ViewContext.HttpContext.Session.GetInt32("BarberId") != null)
-                            {
-                                <form method="post" asp-controller="User" asp-action="Logout" style="display: inline;">
-                                    <button type="submit" class="nav-link text-danger" style="background: none; border: none; padding: 0; cursor: pointer;">
-                                        Logout
-                                    </button>
-                                </form>
-                            }
-                        </li>
-                        <li style="list-style-type: none;" class="d-none d-sm-inline-block ms-3">
-                            <form method="get" action="/Barber/Search" class="search-form">
-                                <input type="text" name="query" placeholder="Search barbers..." />
-                                <button type="submit">Search</button>
+                            <form method="post" asp-controller="User" asp-action="Logout" style="display: inline;">
+                                <button type="submit" class="nav-link text-danger"
+                                        style="background: none; border: none; padding: 0; cursor: pointer;">
+                                    Logout
+                                </button>
                             </form>
-                        </li>
+                        }
+                    </li>
+                    <li style="list-style-type: none;" class="d-none d-sm-inline-block ms-3">
+                        <form method="get" action="/Barber/Search" class="search-form">
+                            <input type="text" name="query" placeholder="Search barbers..."/>
+                            <button type="submit">Search</button>
+                        </form>
+                    </li>
 
-                    </ul>
-                </div>
+                </ul>
             </div>
-        </nav>
-    </header>
+        </div>
+    </nav>
+</header>
 
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+<div class="container">
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+</div>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+<script src="https://kit.fontawesome.com/d8ce167a50.js" crossorigin="anonymous"></script>
+
+
+@await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>
