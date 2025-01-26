@@ -25,7 +25,7 @@
         <h2>Top Barbers</h2>
         <p class="section-subtitle">Choose from our selection of professional barbers</p>
     </div>
-
+    
     <div class="barber-grid">
         @foreach (var barber in Model)
         {
@@ -53,7 +53,7 @@
                 }
             }
         </span>
-                        <span class="rating-value">@barber.Rating.ToString()</span>
+                        <span class="rating-value">@Math.Round(barber.Rating ?? 0.0, 1).ToString("F1")</span>
                     </div>
                 </div>
                 <div class="barber-info">
