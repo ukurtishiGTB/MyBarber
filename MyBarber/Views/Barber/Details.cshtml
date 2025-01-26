@@ -1,26 +1,232 @@
 ﻿@model MyBarber.Models.Barber
 
-<h2>@Model.Name</h2>
-<p><strong>Location:</strong> @Model.Location</p>
-<p><strong>Phone:</strong> @Model.PhoneNumber</p>
-<p><strong>Pricing:</strong> @Model.Pricing</p>
+<div class="barber-profile">
+    <div class="profile-header">
+        <div class="profile-avatar">
+            <i class="fas fa-user-circle"></i>
+        </div>
+        <h2 class="profile-name">@Model.Name</h2>
+        <div class="profile-rating">
+            <div class="stars">
+                @for (int i = 1; i <= 5; i++)
+                {
+                    if (i <= Model.Rating)
+                    {
+                        <i class="fas fa-star"></i>
+                    }
+                    else if (i - 0.5 <= Model.Rating)
+                    {
+                        <i class="fas fa-star-half-alt"></i>
+                    }
+                    else
+                    {
+                        <i class="far fa-star"></i>
+                    }
+                }
+            </div>
+            <span class="rating-value">@Model.Rating.ToString("0.0")</span>
+        </div>
+    </div>
 
-<h3>Reviews</h3>
-@if (Model.Ratings != null && Model.Ratings.Any())
-{
-    <ul>
-        @foreach (var rating in Model.Ratings)
+    <div class="info-grid">
+        <div class="info-card">
+            <i class="fas fa-map-marker-alt"></i>
+            <div class="info-content">
+                <h4>Location</h4>
+                <p>@Model.Location</p>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <i class="fas fa-phone"></i>
+            <div class="info-content">
+                <h4>Phone</h4>
+                <p>@Model.PhoneNumber</p>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <i class="fas fa-dollar-sign"></i>
+            <div class="info-content">
+                <h4>Pricing</h4>
+                <p>@Model.Pricing</p>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <i class="fas fa-cut"></i>
+            <div class="info-content">
+                <h4>Services</h4>
+                <p>@Model.Services</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="reviews-section">
+        <h3><i class="fas fa-comments"></i> Customer Reviews</h3>
+        @if (Model.Ratings != null && Model.Ratings.Any())
         {
-            <li>
-                <p>@rating.Stars stars</p>
-                <p>@rating.Comment</p>
-            </li>
+            <div class="reviews-grid">
+                @foreach (var rating in Model.Ratings)
+                {
+                    <div class="review-card">
+                        <div class="review-stars">
+                            @for (int i = 0; i < rating.Stars; i++)
+                            {
+                                <i class="fas fa-star"></i>
+                            }
+                        </div>
+                        <p class="review-text">@rating.Comment</p>
+                    </div>
+                }
+            </div>
         }
-    </ul>
-}
-else
-{
-    <p>No reviews yet.</p>
+        else
+        {
+            <p class="no-reviews">No reviews yet.</p>
+        }
+    </div>
+</div>
+
+<style>
+.barber-profile {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 2rem;
 }
 
-<p><strong>Services:</strong> @Model.Services</p>
+.profile-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.profile-avatar {
+    font-size: 6rem;
+    color: #2193b0;
+    margin-bottom: 1rem;
+}
+
+.profile-name {
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.profile-rating {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.stars {
+    color: #ffd700;
+    font-size: 1.2rem;
+}
+
+.rating-value {
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.info-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-5px);
+}
+
+.info-card i {
+    font-size: 1.5rem;
+    color: #2193b0;
+}
+
+.info-content h4 {
+    color: #666;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+}
+
+.info-content p {
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.reviews-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.reviews-section h3 {
+    color: #2193b0;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.reviews-grid {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.review-card {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+.review-card:hover {
+    transform: translateY(-2px);
+}
+
+.review-stars {
+    color: #ffd700;
+    margin-bottom: 0.5rem;
+}
+
+.review-text {
+    color: #666;
+    line-height: 1.5;
+}
+
+.no-reviews {
+    color: #666;
+    text-align: center;
+    font-style: italic;
+}
+
+@media (max-width: 768px) {
+    .barber-profile {
+        padding: 1rem;
+    }
+
+    .profile-name {
+        font-size: 2rem;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
