@@ -1,191 +1,213 @@
 ﻿@model MyBarber.Models.Barber
 
-<div class="dashboard-container">
-    <div class="profile-header">
-        <h2 class="welcome-text">Welcome, @Model.Name!</h2>
-        <div class="profile-info">
-            <div class="info-card">
-                <i class="fas fa-envelope"></i>
-                <p>@Model.Email</p>
-            </div>
-            <div class="info-card">
-                <i class="fas fa-map-marker-alt"></i>
-                <p>@Model.Location</p>
-            </div>
-            <div class="info-card">
-                <i class="fas fa-phone"></i>
-                <p>@Model.PhoneNumber</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="dashboard-content">
-        <div class="content-card">
-            <h3><i class="fas fa-cut"></i> Services</h3>
-            <p>@Model.Services</p>
-        </div>
-
-        <div class="content-card">
-            <h3><i class="fas fa-dollar-sign"></i> Pricing</h3>
-            <p>@Model.Pricing</p>
-        </div>
-
-        <div class="content-card reviews-section">
-            <h3><i class="fas fa-star"></i> Ratings</h3>
-            @if (Model.Ratings != null && Model.Ratings.Any())
-            {
-                <div class="reviews-list">
-                    @foreach (var rating in Model.Ratings)
-                    {
-                        <div class="review-item">
-                            <div class="stars">
-                                @for (int i = 0; i < rating.Stars; i++)
-                                {
-                                    <i class="fas fa-star"></i>
-                                }
-                            </div>
-                            <p class="review-comment">@rating.Comment</p>
-                        </div>
-                    }
-                </div>
-            }
-            else
-            {
-                <p class="no-reviews">No reviews yet.</p>
-            }
-        </div>
-    </div>
-
-    <div class="dashboard-actions">
-        <p class="action-text">Here you can manage your services and appointments.</p>
-        <a href="/Barber/MyAccount" class="btn btn-primary">
-            <i class="fas fa-user-cog"></i> My Account
-        </a>
-    </div>
-</div>
-
 <style>
-.dashboard-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-}
+    .profile-container {
+        max-width: 1200px;
+        margin: 50px auto;
+        padding: 0 20px;
+    }
 
-.profile-header {
-    background: linear-gradient(135deg, #2193b0, #6dd5ed);
-    color: white;
-    padding: 2rem;
-    border-radius: 10px;
-    margin-bottom: 2rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
+    .profile-hero {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
+        border-radius: 30px;
+        padding: 60px 40px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 40px;
+    }
 
-.welcome-text {
-    font-size: 2.5rem;
-    margin-bottom: 1.5rem;
-    font-weight: 600;
-}
+    .profile-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background:
+            radial-gradient(circle at 20% 50%, rgba(255,215,0,0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 50%, rgba(255,215,0,0.1) 0%, transparent 50%);
+        pointer-events: none;
+    }
 
-.profile-info {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-}
+    .hero-content {
+        position: relative;
+        z-index: 1;
+    }
 
-.info-card {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 1rem;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
+    .profile-name {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin: 0;
+        background: linear-gradient(to right, #fff, #ffd700);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
 
-.info-card i {
-    font-size: 1.5rem;
-}
+    .profile-role {
+        font-size: 1.2rem;
+        color: #ffd700;
+        margin-top: 10px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+    }
 
-.dashboard-content {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-    margin-bottom: 2rem;
-}
+    .info-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        margin-top: 40px;
+    }
 
-.content-card {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
+    .info-box {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
 
-.content-card h3 {
-    color: #2193b0;
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
+    .info-box::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(to bottom, #ffd700, #ff8c00);
+    }
 
-.reviews-section {
-    grid-column: 1 / -1;
-}
+    .info-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    }
 
-.reviews-list {
-    display: grid;
-    gap: 1rem;
-}
+    .info-label {
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: #666;
+        margin-bottom: 10px;
+    }
 
-.review-item {
-    border-bottom: 1px solid #eee;
-    padding-bottom: 1rem;
-}
+    .info-value {
+        font-size: 1.2rem;
+        color: #333;
+        font-weight: 500;
+    }
 
-.stars {
-    color: #ffd700;
-    margin-bottom: 0.5rem;
-}
+    .services-box {
+        grid-column: 1 / -1;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 40px;
+    }
 
-.review-comment {
-    color: #666;
-}
+    .services-box .info-value {
+        line-height: 1.6;
+        white-space: pre-line;
+    }
 
-.no-reviews {
-    color: #666;
-    font-style: italic;
-}
+    .edit-profile {
+        display: inline-block;
+        margin-top: 40px;
+        padding: 18px 40px;
+        background: linear-gradient(135deg, #ffd700, #ff8c00);
+        color: #1a1a1a;
+        text-decoration: none;
+        border-radius: 30px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(255,215,0,0.2);
+    }
 
-.dashboard-actions {
-    text-align: center;
-    margin-top: 2rem;
-}
+    .edit-profile:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(255,215,0,0.3);
+    }
 
-.action-text {
-    margin-bottom: 1rem;
-    color: #666;
-}
+    .stats-container {
+        display: flex;
+        gap: 30px;
+        margin: 40px 0;
+    }
 
-.btn {
-    padding: 0.75rem 1.5rem;
-    font-size: 1.1rem;
-    text-decoration: none;
-    border-radius: 5px;
-    transition: all 0.3s ease;
-}
+    .stat-item {
+        flex: 1;
+        text-align: center;
+        padding: 20px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+    }
 
-.btn-primary {
-    background: #2193b0;
-    color: white;
-    border: none;
-}
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #ffd700;
+    }
 
-.btn-primary:hover {
-    background: #1a7a8c;
-    transform: translateY(-2px);
-}
+    .stat-label {
+        font-size: 0.9rem;
+        color: rgba(255,255,255,0.8);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 5px;
+    }
 </style>
 
-@section Scripts {
-    <script src="https://kit.fontawesome.com/d8ce167a50.js" crossorigin="anonymous"></script>
-}
+<div class="profile-container">
+    <div class="profile-hero">
+        <div class="hero-content">
+            <h1 class="profile-name">@Model.Name</h1>
+            <div class="profile-role">Master Barber</div>
 
+            <div class="stats-container">
+                <div class="stat-item">
+                    <div class="stat-value">5+</div>
+                    <div class="stat-label">Years Experience</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">€@Model.Pricing</div>
+                    <div class="stat-label">Starting Price</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">100%</div>
+                    <div class="stat-label">Satisfaction</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-container">
+        <div class="info-box">
+            <div class="info-label">Location</div>
+            <div class="info-value">@Model.Location</div>
+        </div>
+
+        <div class="info-box">
+            <div class="info-label">Contact</div>
+            <div class="info-value">@Model.PhoneNumber</div>
+        </div>
+
+        <div class="info-box">
+            <div class="info-label">Email</div>
+            <div class="info-value">@Model.Email</div>
+        </div>
+
+        <div class="info-box services-box">
+            <div class="info-label">Services & Expertise</div>
+            <div class="info-value">@Model.Services</div>
+        </div>
+    </div>
+
+    <a href="@Url.Action("Edit", "Barber")" class="edit-profile">
+        Customize Profile
+    </a>
+</div>
