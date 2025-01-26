@@ -12,8 +12,8 @@ using MyBarber.Data;
 namespace MyBarber.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250124172821_Initial")]
-    partial class Initial
+    [Migration("20250126155305_nullable-value-nrofratings")]
+    partial class nullablevaluenrofratings
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -78,6 +78,9 @@ namespace MyBarber.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("NumberOfRatings")
+                        .HasColumnType("int");
+
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -100,47 +103,6 @@ namespace MyBarber.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Barbers");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Email = "test@gmail.com",
-                            HashPassword = "test",
-                            Location = "Cair",
-                            Name = "John Doe",
-                            PhoneNumber = "123-456-7890",
-                            Pricing = 20m,
-                            Rating = 0.0,
-                            Services = "Haircut",
-                            isActive = true
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Email = "test@gmail.com",
-                            HashPassword = "test",
-                            Location = "Cair",
-                            Name = "Jane Smith",
-                            PhoneNumber = "123-456-7890",
-                            Pricing = 20m,
-                            Rating = 0.0,
-                            Services = "Haircut",
-                            isActive = true
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Email = "test@gmail.com",
-                            HashPassword = "test",
-                            Location = "Cair",
-                            Name = "Mike Johnson",
-                            PhoneNumber = "123-456-7890",
-                            Pricing = 20m,
-                            Rating = 0.0,
-                            Services = "Haircut",
-                            isActive = true
-                        });
                 });
 
             modelBuilder.Entity("MyBarber.Models.LoyaltyProgram", b =>
@@ -162,6 +124,39 @@ namespace MyBarber.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("LoyaltyPrograms");
+                });
+
+            modelBuilder.Entity("MyBarber.Models.Rating", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BarberId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Stars")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BarberId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Ratings");
                 });
 
             modelBuilder.Entity("MyBarber.Models.User", b =>
@@ -218,6 +213,25 @@ namespace MyBarber.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MyBarber.Models.Rating", b =>
+                {
+                    b.HasOne("MyBarber.Models.Barber", "Barber")
+                        .WithMany()
+                        .HasForeignKey("BarberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MyBarber.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Barber");
 
                     b.Navigation("User");
                 });

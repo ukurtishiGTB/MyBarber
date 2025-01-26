@@ -19,8 +19,9 @@
             <td>@barber.Location</td>
             <td>@barber.PhoneNumber</td>
             <td>
-                <a asp-action="Details" asp-controller="Barbers" asp-route-id="@barber.Id" class="btn btn-primary">View Profile</a>
+                <a asp-action="Details" asp-controller="Barber" asp-route-id="@barber.Id" class="btn btn-primary">View Profile</a>
                 <a asp-action="Book" asp-controller="Appointment" asp-route-barberId="@barber.Id" class="btn btn-success">Book Appointment</a>
+                <a asp-action="SubmitRating" asp-controller="Barber" asp-route-id="@barber.Id" class="btn btn-danger">Leave a rating</a>
             </td>
         </tr>
     }

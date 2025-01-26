@@ -3,8 +3,6 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace MyBarber.Migrations
 {
     /// <inheritdoc />
@@ -27,6 +25,7 @@ namespace MyBarber.Migrations
                     Pricing = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ProfileImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Rating = table.Column<double>(type: "float", nullable: true),
+                    NumberOfRatings = table.Column<int>(type: "int", nullable: false),
                     Services = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     isActive = table.Column<bool>(type: "bit", nullable: true)
                 },
@@ -99,14 +98,33 @@ namespace MyBarber.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.InsertData(
-                table: "Barbers",
-                columns: new[] { "Id", "Email", "HashPassword", "Location", "Name", "PhoneNumber", "Pricing", "ProfileImage", "Rating", "Services", "isActive" },
-                values: new object[,]
+            migrationBuilder.CreateTable(
+                name: "Ratings",
+                columns: table => new
                 {
-                    { 1, "test@gmail.com", "test", "Cair", "John Doe", "123-456-7890", 20m, null, 0.0, "Haircut", true },
-                    { 2, "test@gmail.com", "test", "Cair", "Jane Smith", "123-456-7890", 20m, null, 0.0, "Haircut", true },
-                    { 3, "test@gmail.com", "test", "Cair", "Mike Johnson", "123-456-7890", 20m, null, 0.0, "Haircut", true }
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BarberId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    Stars = table.Column<int>(type: "int", nullable: false),
+                    Comment = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ratings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Ratings_Barbers_BarberId",
+                        column: x => x.BarberId,
+                        principalTable: "Barbers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Ratings_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -123,6 +141,16 @@ namespace MyBarber.Migrations
                 name: "IX_LoyaltyPrograms_UserId",
                 table: "LoyaltyPrograms",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ratings_BarberId",
+                table: "Ratings",
+                column: "BarberId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ratings_UserId",
+                table: "Ratings",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -133,6 +161,9 @@ namespace MyBarber.Migrations
 
             migrationBuilder.DropTable(
                 name: "LoyaltyPrograms");
+
+            migrationBuilder.DropTable(
+                name: "Ratings");
 
             migrationBuilder.DropTable(
                 name: "Barbers");
