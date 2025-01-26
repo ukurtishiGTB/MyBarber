@@ -99,22 +99,19 @@
                        
                         @if (ViewContext.HttpContext.Session.GetInt32("UserId") != null)
                         {
-                            <li><a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="MyAccount">My Account</a></li>
-                            <li><a class="nav-link text-dark" asp-area="" asp-controller="Barber" asp-action="Index">Barbers</a></li>
+                            <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="MyAccount">My Account</a></li>
+                            <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Barber" asp-action="Index">Barbers</a></li>
 
                         }
                         else if (ViewContext.HttpContext.Session.GetInt32("BarberId") != null)
                         {
-                            <li><a class="nav-link text-dark" asp-area="" asp-controller="Barber" asp-action="MyAccount">My Account</a></li>
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Appointment" asp-action="ManageAppointments">My Appointments</a>
+                            <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Barber" asp-action="MyAccount">My Account</a></li>
+                            <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Appointment" asp-action="ManageAppointments">My Appointments</a></li>
                         }
                         else
                         {
-                            <li> <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Login">User Login</a></li>
-                            <li><a class="nav-link text-dark" asp-area="" asp-controller="Barber" asp-action="Login">Barber Login </a></li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="RegisterChoice">Register</a>
-                            </li>
+                            <li class="nav-item"> <a method="GET" class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Index">Login</a></li>
+                            <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="RegisterChoice">Register</a></li>
                         }
                         <li>
                             @if (ViewContext.HttpContext.Session.GetInt32("UserId") != null || ViewContext.HttpContext.Session.GetInt32("BarberId") != null)
