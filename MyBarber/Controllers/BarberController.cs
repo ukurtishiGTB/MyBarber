@@ -112,7 +112,9 @@ namespace MyBarber.Controllers
             var barberId = HttpContext.Session.GetInt32("BarberId");
             if (barberId == null) return RedirectToAction("Login");
 
-            var barber = _context.Barbers.FirstOrDefault(b => b.Id == barberId);
+            var barber = _context.Barbers
+                .Include(b => b.Ratings)
+                .FirstOrDefault(b => b.Id == barberId);
             return View(barber);
         }
         [HttpGet("Details/{id}")]

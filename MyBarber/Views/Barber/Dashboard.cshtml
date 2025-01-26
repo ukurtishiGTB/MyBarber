@@ -2,6 +2,28 @@
 
 <h2>Welcome, @Model.Name!</h2>
 <p>Your email: @Model.Email</p>
+<p><strong>Location:</strong> @Model.Location</p>
+<p><strong>Phone Number:</strong> @Model.PhoneNumber</p>
+<p><strong>Pricing:</strong> @Model.Pricing</p>
+<p><strong>Services:</strong> @Model.Services</p>
+<ul><strong>Ratings:</strong>
+    @if (Model.Ratings != null && Model.Ratings.Any())
+    {
+        <ul>
+            @foreach (var rating in Model.Ratings)
+            {
+                <li>
+                    <p>@rating.Stars stars</p>
+                    <p>@rating.Comment</p>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>No reviews yet.</p>
+    }
+</ul>
 <p>Here you can manage your services and appointments.</p>
 <a href="/Barber/MyAccount">My Account</a>
 
