@@ -9,131 +9,145 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/MyBarber.styles.css" asp-append-version="true"/>
-    
+    <style>
+        /* Rregullimi i navbar-it dhe shfaqja e elementeve në të njëjtën vijë */
+        .navbar .navbar-brand {
+            font-size: 1.5rem; /* Madhësia e emrit të faqes */
+            margin-right: 20px; /* Hapësirë mes markës dhe elementeve të tjerë */
+        }
+
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+            gap: 15px; /* Hapësirë midis elementeve */
+        }
+
+        .navbar-collapse {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .nav-item {
+            list-style: none;
+            margin-right: 15px; /* Hapësirë për çdo element */
+        }
+
+        .search-form {
+            display: flex;
+            align-items: center;
+            background-color: #f9f9f9;
+            padding: 8px 12px;
+            border-radius: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: auto;
+            max-width: 350px;
+        }
+
+        /* Rregullimi i input-it */
+        .search-form input {
+            padding: 8px 12px;
+            margin-right: 10px;
+            border: 2px solid #ccc;
+            border-radius: 25px;
+            font-size: 14px;
+            width: 100%; /* E bën inputin të mbushë hapësirën */
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        /* Përdorim ngjyrë më të errët për input kur është fokusuar */
+        .search-form input:focus {
+            border-color: #007bff;
+        }
+
+        /* Rregullimi i butonit */
+        .search-form button {
+            padding: 8px 15px;
+            border: 2px solid ;
+            background-color: #000000;
+            color: white;
+            font-size: 14px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        /* Efekti hover për butonin */
+        .search-form button:hover {
+            background-color: #000000;
+            transform: translateY(-2px); /* Efekti i lëvizjes kur kalon me maus */
+        }
+
+            /* Efekti hover për formën e input-it */
+            .search-form:hover {
+                box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
+            }
+    </style>
 </head>
 <body>
-<header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-        <div class="container-fluid d-flex align-items-center">
-            <!-- Emri i faqes dhe lidhjet -->
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MyBarber</a>
-            <div class="navbar-collapse collapse d-flex justify-content-between w-100">
-                <ul class="navbar-nav flex-grow-1 d-flex align-items-center">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                    </li>
-                    @if (ViewContext.HttpContext.Session.GetInt32("UserId") != null)
-                    {
-                        <li><a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="MyAccount">My Account</a></li>
-                        <li><a class="nav-link text-dark" asp-area="" asp-controller="Barber" asp-action="Index">Barbers</a></li>
-                    }
-                    else if (ViewContext.HttpContext.Session.GetInt32("BarberId") != null)
-                    {
-                        <li><a class="nav-link text-dark" asp-area="" asp-controller="Barber" asp-action="MyAccount">My Account</a></li>
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Appointment" asp-action="ManageAppointments">My Appointments</a>
-                    }
-                    else
-                    {
-                        <li> <a method="GET" class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Index">Login</a></li>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid d-flex align-items-center">
+                <!-- Emri i faqes dhe lidhjet -->
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MyBarber</a>
+                <div class="navbar-collapse collapse d-flex justify-content-between w-100">
+                    <ul class="navbar-nav flex-grow-1 d-flex align-items-center">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="RegisterChoice">Register</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                    }
-                    <li style="list-style-type: none;" class="d-none d-sm-inline-block ms-3">
-                        <form method="get" action="/Barber/Search" class="search-form">
-                            <input type="text" name="query" placeholder="Search barbers..." />
-                            <button type="submit">Search</button>
-                        </form>
-                    </li>
-                    
-                </ul>
+                       
+                        @if (ViewContext.HttpContext.Session.GetInt32("UserId") != null)
+                        {
+                            <li><a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="MyAccount">My Account</a></li>
+                            <li><a class="nav-link text-dark" asp-area="" asp-controller="Barber" asp-action="Index">Barbers</a></li>
+
+                        }
+                        else if (ViewContext.HttpContext.Session.GetInt32("BarberId") != null)
+                        {
+                            <li><a class="nav-link text-dark" asp-area="" asp-controller="Barber" asp-action="MyAccount">My Account</a></li>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Appointment" asp-action="ManageAppointments">My Appointments</a>
+                        }
+                        else
+                        {
+                            <li> <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Login">User Login</a></li>
+                            <li><a class="nav-link text-dark" asp-area="" asp-controller="Barber" asp-action="Login">Barber Login </a></li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="RegisterChoice">Register</a>
+                            </li>
+                        }
+                        <li>
+                            @if (ViewContext.HttpContext.Session.GetInt32("UserId") != null || ViewContext.HttpContext.Session.GetInt32("BarberId") != null)
+                            {
+                                <form method="post" asp-controller="User" asp-action="Logout" style="display: inline;">
+                                    <button type="submit" class="nav-link text-danger" style="background: none; border: none; padding: 0; cursor: pointer;">
+                                        Logout
+                                    </button>
+                                </form>
+                            }
+                        </li>
+                        <li style="list-style-type: none;" class="d-none d-sm-inline-block ms-3">
+                            <form method="get" action="/Barber/Search" class="search-form">
+                                <input type="text" name="query" placeholder="Search barbers..." />
+                                <button type="submit">Search</button>
+                            </form>
+                        </li>
+
+                    </ul>
+                </div>
             </div>
-        </div>
-    </nav>
-</header>
-<style>
-    /* Rregullimi i navbar-it dhe shfaqja e elementeve në të njëjtën vijë */
-    .navbar .navbar-brand {
-        font-size: 1.5rem; /* Madhësia e emrit të faqes */
-        margin-right: 20px; /* Hapësirë mes markës dhe elementeve të tjerë */
-    }
+        </nav>
+    </header>
 
-    .navbar-nav {
-        display: flex;
-        align-items: center;
-        gap: 15px; /* Hapësirë midis elementeve */
-    }
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
 
-    .navbar-collapse {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-    }
-
-    .nav-item {
-        list-style: none;
-        margin-right: 15px; /* Hapësirë për çdo element */
-    }
-
-    .search-form {
-        display: flex;
-        align-items: center;
-        background-color: #f9f9f9;
-        padding: 8px 12px;
-        border-radius: 25px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        width: auto;
-        max-width: 350px;
-    }
-
-    /* Rregullimi i input-it */
-    .search-form input {
-        padding: 8px 12px;
-        margin-right: 10px;
-        border: 2px solid #ccc;
-        border-radius: 25px;
-        font-size: 14px;
-        width: 100%; /* E bën inputin të mbushë hapësirën */
-        outline: none;
-        transition: border-color 0.3s ease;
-    }
-
-    /* Përdorim ngjyrë më të errët për input kur është fokusuar */
-    .search-form input:focus {
-        border-color: #007bff;
-    }
-
-    /* Rregullimi i butonit */
-    .search-form button {
-        padding: 8px 15px;
-        border: 2px solid ;
-        background-color: #000000;
-        color: white;
-        font-size: 14px;
-        border-radius: 25px;
-        cursor: pointer;
-        transition: background-color 0.3s, transform 0.2s;
-    }
-
-    /* Efekti hover për butonin */
-    .search-form button:hover {
-        background-color: #000000;
-        transform: translateY(-2px); /* Efekti i lëvizjes kur kalon me maus */
-    }
-
-    /* Efekti hover për formën e input-it */
-    .search-form:hover {
-        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
-    }
-</style>
-<div class="container">
-    <main role="main" class="pb-3">
-        @RenderBody()
-    </main>
-</div>
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="~/js/site.js" asp-append-version="true"></script>
-@await RenderSectionAsync("Scripts", required: false)
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

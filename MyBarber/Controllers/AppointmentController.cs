@@ -195,8 +195,8 @@ public IActionResult Book(AppointmentBookingViewModel model)
 
         // Fetch appointments for the specified barber and include the related User entity
         var pendingAppointments = _dbContext.Appointments
-            .Where(a => a.BarberId == barberId) // Filter by BarberId
-            .Include(a => a.User) // Include the User entity for display
+            .Where(a => a.BarberId == barberId)
+            .Include(a => a.User)
             .ToList();
 
         return View(pendingAppointments);

@@ -7,6 +7,7 @@ using MyBarber.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHttpContextAccessor();
 
 
 // Add services to the container.
@@ -24,6 +25,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     {
         options.LoginPath = "/Barber/Login"; // Redirect to this path if not authenticated
     });
+
 
 builder.Services.AddAuthorization();
 
