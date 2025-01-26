@@ -51,7 +51,7 @@ namespace MyBarber.Controllers
             return View();
         }
 
-        [HttpPost("Login")]
+       /* [HttpPost("Login")]
         public async Task<IActionResult> Login(UserLoginViewModel model)
         {
             // Check if the user exists in the database
@@ -119,6 +119,7 @@ namespace MyBarber.Controllers
                 return View(model);
             }
         }
+        */
 
         [Route("MyAccount")]
         public IActionResult MyAccount()

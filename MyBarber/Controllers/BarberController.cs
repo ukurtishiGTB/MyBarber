@@ -65,6 +65,7 @@ namespace MyBarber.Controllers
             return View(model);
         }
 
+        /*
         [HttpGet("Login")]
         public IActionResult Login()
         {
@@ -85,6 +86,7 @@ namespace MyBarber.Controllers
             ModelState.AddModelError(string.Empty, "Invalid login attempt");
             return View(model);
         }
+        */
         [Route("MyAccount")]
         public IActionResult MyAccount()
         {
