@@ -1,6 +1,129 @@
 ﻿@model MyBarber.Models.User
 
-<h2>My Account</h2>
-<p><strong>Name:</strong> @Model.Name</p>
-<p><strong>Email:</strong> @Model.Email</p>
-<a href="/User/Dashboard">Dashboard</a>
+<div class="account-container">
+    <div class="account-header">
+        <div class="user-avatar">
+            <i class="fas fa-user-circle"></i>
+        </div>
+        <h2 class="account-title">My Account</h2>
+    </div>
+
+    <div class="account-details">
+        <div class="info-card">
+            <div class="info-label">
+                <i class="fas fa-user"></i>
+                <span>Name</span>
+            </div>
+            <div class="info-value">@Model.Name</div>
+        </div>
+
+        <div class="info-card">
+            <div class="info-label">
+                <i class="fas fa-envelope"></i>
+                <span>Email</span>
+            </div>
+            <div class="info-value">@Model.Email</div>
+        </div>
+    </div>
+
+    <a href="/User/Dashboard" class="dashboard-btn">
+        <i class="fas fa-columns"></i>
+        Go to Dashboard
+    </a>
+</div>
+
+<style>
+.account-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.account-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.user-avatar {
+    font-size: 5rem;
+    color: #2193b0;
+    margin-bottom: 1rem;
+}
+
+.account-title {
+    color: #2193b0;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.account-details {
+    display: grid;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.info-card {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.info-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-value {
+    color: #333;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.dashboard-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #2193b0, #6dd5ed);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.dashboard-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(33, 147, 176, 0.3);
+    color: white;
+}
+
+@@media (max-width: 768px) {
+    .account-container {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+
+    .account-title {
+        font-size: 2rem;
+    }
+}
+</style>
