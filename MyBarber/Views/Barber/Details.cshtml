@@ -4,5 +4,23 @@
 <p><strong>Location:</strong> @Model.Location</p>
 <p><strong>Phone:</strong> @Model.PhoneNumber</p>
 <p><strong>Pricing:</strong> @Model.Pricing</p>
-<p><strong>Rating:</strong> @Model.Rating</p>
+
+<h3>Reviews</h3>
+@if (Model.Ratings != null && Model.Ratings.Any())
+{
+    <ul>
+        @foreach (var rating in Model.Ratings)
+        {
+            <li>
+                <p>@rating.Stars stars</p>
+                <p>@rating.Comment</p>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No reviews yet.</p>
+}
+
 <p><strong>Services:</strong> @Model.Services</p>

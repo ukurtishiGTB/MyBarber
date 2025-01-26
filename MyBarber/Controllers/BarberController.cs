@@ -118,14 +118,18 @@ namespace MyBarber.Controllers
         [HttpGet("Details/{id}")]
         public IActionResult Details(int id)
         {
-            var barber = _context.Barbers.FirstOrDefault(b => b.Id == id);
+            var barber = _context.Barbers
+                .Include(b => b.Ratings) // Include Ratings
+                .FirstOrDefault(b => b.Id == id);
+
             if (barber == null)
             {
-                return NotFound();
+                return NotFound("Barber not found.");
             }
 
             return View(barber);
         }
+
         [HttpGet("Search")]
         public IActionResult Search(string query)
         {
