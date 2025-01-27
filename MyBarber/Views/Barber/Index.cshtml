@@ -1,28 +1,170 @@
 @model List<BarberListViewModel>
 
-<h1>Our Barbers</h1>
+<div class="barbers-page">
+    <div class="page-header">
+        <h1>Our Professional Barbers</h1>
+        <p class="subtitle">Choose your preferred barber and book an appointment</p>
+    </div>
 
-<table class="table">
-    <thead>
-    <tr>
-        <th>Name</th>
-        <th>Location</th>
-        <th>Phone Number</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var barber in Model)
-    {
-        <tr>
-            <td>@barber.Name</td>
-            <td>@barber.Location</td>
-            <td>@barber.PhoneNumber</td>
-            <td>
-                <a asp-action="Details" asp-controller="Barbers" asp-route-id="@barber.Id" class="btn btn-primary">View Profile</a>
-                <a asp-action="Book" asp-controller="Appointment" asp-route-barberId="@barber.Id" class="btn btn-success">Book Appointment</a>
-            </td>
-        </tr>
+    <div class="barbers-list">
+        @foreach (var barber in Model)
+        {
+            <div class="barber-card">
+                <div class="barber-info">
+                    <div class="barber-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="barber-details">
+                        <h3>@barber.Name</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> @barber.Location</p>
+                        <p><i class="fas fa-phone"></i> @barber.PhoneNumber</p>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <a asp-action="Details" asp-controller="Barber" asp-route-id="@barber.Id" class="btn-view">
+                        <i class="fas fa-user"></i> View Profile
+                    </a>
+                    <a asp-action="Book" asp-controller="Appointment" asp-route-barberId="@barber.Id" class="btn-book">
+                        <i class="fas fa-calendar-alt"></i> Book Appointment
+                    </a>
+                    <a asp-action="SubmitRating" asp-controller="Barber" asp-route-id="@barber.Id" class="btn-rate">
+                        <i class="fas fa-star"></i> Leave Rating
+                    </a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+.barbers-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.page-header h1 {
+    color: #2193b0;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.subtitle {
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.barbers-list {
+    display: grid;
+    gap: 2rem;
+}
+
+.barber-card {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.barber-card:hover {
+    transform: translateY(-5px);
+}
+
+.barber-info {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.barber-avatar {
+    font-size: 3.5rem;
+    color: #2193b0;
+}
+
+.barber-details h3 {
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-size: 1.3rem;
+}
+
+.barber-details p {
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.3rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.action-buttons a {
+    flex: 1;
+    min-width: 150px;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-view {
+    background: linear-gradient(135deg, #2193b0, #6dd5ed);
+    color: white;
+}
+
+.btn-book {
+    background: linear-gradient(135deg, #2ecc71, #27ae60);
+    color: white;
+}
+
+.btn-rate {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+}
+
+.action-buttons a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    color: white;
+}
+
+@@media (max-width: 768px) {
+    .barbers-page {
+        padding: 1rem;
     }
-    </tbody>
-</table>
+
+    .page-header h1 {
+        font-size: 2rem;
+    }
+
+    .barber-info {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .action-buttons a {
+        width: 100%;
+    }
+}
+</style>

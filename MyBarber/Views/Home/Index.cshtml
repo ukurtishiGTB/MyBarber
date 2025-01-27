@@ -2,61 +2,238 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome To MyBarber</h1>
-    <p>Book your haircut now and be happy after :)</p>
+<div class="hero-section">
+    <div class="hero-content">
+        <h1 class="main-title">Welcome To MyBarber</h1>
+        <p class="hero-text">Book your perfect haircut with our professional barbers</p>
+        <a href="#top-barbers" class="cta-button">Find Your Barber</a>
+    </div>
 </div>
 
 @if (TempData["LoginMessage"] != null)
 {
-    <div class="alert alert-success">
+    <div class="alert alert-success fade-in">
+        <i class="fas fa-check-circle"></i>
         @TempData["LoginMessage"]
     </div>
 }
 
 @model IEnumerable<MyBarber.Models.Barber>
 
-<h2>Top Barbers</h2>
-
-<div class="barber-list">
-    @foreach (var barber in Model)
-    {
-        <div class="barber-card">
-            <h3>@barber.Name</h3>
-            <p><strong>Location:</strong> @barber.Location</p>
-            <p><strong>Rating:</strong> @barber.Rating</p>
-            <p><strong>Services:</strong> @barber.Services</p>
-            <a href="/Barber/Details/@barber.Id">View Profile</a>
-        </div>
-    }
-</div>
+<section id="top-barbers" class="barbers-section">
+    <div class="section-header">
+        <h2>Top Barbers</h2>
+        <p class="section-subtitle">Choose from our selection of professional barbers</p>
+    </div>
+    
+    <div class="barber-grid">
+        @foreach (var barber in Model)
+        {
+            <div class="barber-card">
+                <div class="barber-header">
+                    <div class="avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <h3>@barber.Name</h3>
+                    <div class="rating">
+        <span class="stars">
+            @for (int i = 1; i <= 5; i++)
+            {
+                if (i <= barber.Rating)
+                {
+                    <i class="fas fa-star"></i>
+                }
+                else if (i - 0.5 <= barber.Rating)
+                {
+                    <i class="fas fa-star-half-alt"></i>
+                }
+                else
+                {
+                    <i class="far fa-star"></i>
+                }
+            }
+        </span>
+                        <span class="rating-value">@Math.Round(barber.Rating ?? 0.0, 1).ToString("F1")</span>
+                    </div>
+                </div>
+                <div class="barber-info">
+                    <p><i class="fas fa-map-marker-alt"></i> @barber.Location</p>
+                    <p><i class="fas fa-cut"></i> @barber.Services</p>
+                </div>
+                <a href="/Barber/Details/@barber.Id" class="view-profile-btn">
+                    View Profile <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        }
+    </div>
+</section>
 
 <style>
-    .barber-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-    }
+.hero-section {
+    background: linear-gradient(135deg, #2193b0, #6dd5ed);
+    color: white;
+    padding: 4rem 2rem;
+    text-align: center;
+    margin-bottom: 3rem;
+    border-radius: 0 0 50px 50px;
+}
 
-    .barber-card {
-        border: 1px solid #ddd;
-        padding: 15px;
-        border-radius: 5px;
-        width: 300px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
+.hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
 
-    .barber-card h3 {
-        margin-top: 0;
-    }
+.main-title {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
 
-    .barber-card a {
-        color: #000000;
-        text-decoration: underline; /* Shtoni vijën nën lidhje */
-    }
+.hero-text {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
 
-    .barber-card a:hover {
-        text-decoration: none; /* Hiqni vijën kur është në hover */
-        color: #007bff; /* Ndryshoni ngjyrën në blu kur kalon mbi të */
+.cta-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: white;
+    color: #2193b0;
+    text-decoration: none;
+    border-radius: 30px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.alert {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1rem;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.barbers-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.section-header h2 {
+    font-size: 2.5rem;
+    color: #2193b0;
+    margin-bottom: 0.5rem;
+}
+
+.section-subtitle {
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.barber-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.barber-card {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.barber-card:hover {
+    transform: translateY(-5px);
+}
+
+.barber-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.avatar {
+    font-size: 4rem;
+    color: #2193b0;
+    margin-bottom: 1rem;
+}
+
+.rating {
+    color: #ffd700;
+    margin-top: 0.5rem;
+}
+
+.rating-value {
+    color: #666;
+    margin-left: 0.5rem;
+}
+
+.barber-info {
+    margin-bottom: 1.5rem;
+}
+
+.barber-info p {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    color: #666;
+}
+
+.view-profile-btn {
+    display: block;
+    text-align: center;
+    padding: 0.75rem;
+    background: #2193b0;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.view-profile-btn:hover {
+    background: #1a7a8c;
+    color: white;
+}
+
+@@media (max-width: 768px) {
+    .main-title {
+        font-size: 2.5rem;
     }
+    
+    .hero-section {
+        padding: 3rem 1rem;
+    }
+    
+    .barber-grid {
+        grid-template-columns: 1fr;
+    }
+}
 </style>
+
+@section Scripts {
+    <script src="https://kit.fontawesome.com/d8ce167a50.js" crossorigin="anonymous"></script>
+}

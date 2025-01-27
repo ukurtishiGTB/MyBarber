@@ -1,7 +1,213 @@
 ﻿@model MyBarber.Models.Barber
 
-<h2>Welcome, @Model.Name!</h2>
-<p>Your email: @Model.Email</p>
-<p>Here you can manage your services and appointments.</p>
-<a href="/Barber/MyAccount">My Account</a>
+<style>
+    .profile-container {
+        max-width: 1200px;
+        margin: 50px auto;
+        padding: 0 20px;
+    }
 
+    .profile-hero {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
+        border-radius: 30px;
+        padding: 60px 40px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 40px;
+    }
+
+    .profile-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background:
+            radial-gradient(circle at 20% 50%, rgba(255,215,0,0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 50%, rgba(255,215,0,0.1) 0%, transparent 50%);
+        pointer-events: none;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .profile-name {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin: 0;
+        background: linear-gradient(to right, #fff, #ffd700);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .profile-role {
+        font-size: 1.2rem;
+        color: #ffd700;
+        margin-top: 10px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+    }
+
+    .info-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        margin-top: 40px;
+    }
+
+    .info-box {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    .info-box::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(to bottom, #ffd700, #ff8c00);
+    }
+
+    .info-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    }
+
+    .info-label {
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: #666;
+        margin-bottom: 10px;
+    }
+
+    .info-value {
+        font-size: 1.2rem;
+        color: #333;
+        font-weight: 500;
+    }
+
+    .services-box {
+        grid-column: 1 / -1;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 40px;
+    }
+
+    .services-box .info-value {
+        line-height: 1.6;
+        white-space: pre-line;
+    }
+
+    .edit-profile {
+        display: inline-block;
+        margin-top: 40px;
+        padding: 18px 40px;
+        background: linear-gradient(135deg, #ffd700, #ff8c00);
+        color: #1a1a1a;
+        text-decoration: none;
+        border-radius: 30px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(255,215,0,0.2);
+    }
+
+    .edit-profile:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(255,215,0,0.3);
+    }
+
+    .stats-container {
+        display: flex;
+        gap: 30px;
+        margin: 40px 0;
+    }
+
+    .stat-item {
+        flex: 1;
+        text-align: center;
+        padding: 20px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #ffd700;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        color: rgba(255,255,255,0.8);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 5px;
+    }
+</style>
+
+<div class="profile-container">
+    <div class="profile-hero">
+        <div class="hero-content">
+            <h1 class="profile-name">@Model.Name</h1>
+            <div class="profile-role">Master Barber</div>
+
+            <div class="stats-container">
+                <div class="stat-item">
+                    <div class="stat-value">5+</div>
+                    <div class="stat-label">Years Experience</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">€@Model.Pricing</div>
+                    <div class="stat-label">Starting Price</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">100%</div>
+                    <div class="stat-label">Satisfaction</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-container">
+        <div class="info-box">
+            <div class="info-label">Location</div>
+            <div class="info-value">@Model.Location</div>
+        </div>
+
+        <div class="info-box">
+            <div class="info-label">Contact</div>
+            <div class="info-value">@Model.PhoneNumber</div>
+        </div>
+
+        <div class="info-box">
+            <div class="info-label">Email</div>
+            <div class="info-value">@Model.Email</div>
+        </div>
+
+        <div class="info-box services-box">
+            <div class="info-label">Services & Expertise</div>
+            <div class="info-value">@Model.Services</div>
+        </div>
+    </div>
+
+    <a href="@Url.Action("Edit", "Barber")" class="edit-profile">
+        Customize Profile
+    </a>
+</div>

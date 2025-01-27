@@ -1,21 +1,154 @@
 @model MyBarber.ViewModels.LoginViewModel
 
-<h2 style="text-align: center; color: #333;">Login</h2>
-<form method="post" style="max-width: 400px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-    <label for="email" style="display: block; margin-bottom: 8px; font-weight: bold; color: #555;">Email:</label>
-    <input type="email" name="Email" required style="width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;">
+<div class="login-container">
+    <div class="login-box">
+        <div class="login-header">
+            <h1>Welcome Back</h1>
+            <p>Sign in to your account</p>
+        </div>
 
-    <label for="password" style="display: block; margin-bottom: 8px; font-weight: bold; color: #555;">Password:</label>
-    <input type="password" name="Password" required style="width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;">
+        <form method="post" class="login-form">
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" name="Email" required placeholder="Your email">
+            </div>
 
-    <div style="margin-bottom: 20px;">
-        <label for="rememberMe" style="font-weight: normal; color: #555;">
-            <input type="checkbox" name="RememberMe" id="rememberMe" style="margin-right: 8px;">
-            Remember Me
-        </label>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" name="Password" required placeholder="Password">
+            </div>
+
+            <div class="remember-forgot">
+                <label>
+                    <input type="checkbox" name="RememberMe">
+                    <span>Remember me</span>
+                </label>
+                <a href="#">Forgot password?</a>
+            </div>
+
+            <button type="submit">Sign In</button>
+
+            <div class="register-link">
+                Don't have an account? <a asp-controller="Account" asp-action="Register">Sign Up</a>
+            </div>
+        </form>
     </div>
-    <button type="submit" style="width: 100%; padding: 10px; background-color: #000000; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer;">Login</button>
-</form>
+</div>
 
+<style>
+    .login-container {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #e6f3ff;
+    }
 
+    .login-box {
+        background: white;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+    }
 
+    .login-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .login-header h1 {
+        color: #333;
+        font-size: 28px;
+        margin-bottom: 10px;
+    }
+
+    .login-header p {
+        color: #666;
+        font-size: 16px;
+    }
+
+    .input-group {
+        position: relative;
+        margin-bottom: 20px;
+    }
+
+    .input-group i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #666;
+    }
+
+    .input-group input {
+        width: 100%;
+        padding: 12px 15px 12px 40px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 15px;
+        transition: border-color 0.3s ease;
+    }
+
+    .input-group input:focus {
+        border-color: #007bff;
+        outline: none;
+    }
+
+    .remember-forgot {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        font-size: 14px;
+    }
+
+    .remember-forgot label {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        color: #666;
+    }
+
+    .remember-forgot a {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    button[type="submit"] {
+        width: 100%;
+        padding: 12px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    button[type="submit"]:hover {
+        background-color: #0056b3;
+        transform: translateY(-1px);
+    }
+
+    .register-link {
+        text-align: center;
+        margin-top: 20px;
+        color: #666;
+    }
+
+    .register-link a {
+        color: #007bff;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .register-link a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<!-- Add Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">

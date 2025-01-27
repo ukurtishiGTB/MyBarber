@@ -5,146 +5,214 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewData["Title"] - MyBarber</title>
-    <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/MyBarber.styles.css" asp-append-version="true"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* Rregullimi i navbar-it dhe shfaqja e elementeve në të njëjtën vijë */
-        .navbar .navbar-brand {
-            font-size: 1.5rem; /* Madhësia e emrit të faqes */
-            margin-right: 20px; /* Hapësirë mes markës dhe elementeve të tjerë */
+        :root {
+            --primary-color: #2193b0;
+            --secondary-color: #6dd5ed;
+            --text-color: #333;
+            --hover-color: #1a7a8c;
         }
 
-        .navbar-nav {
-            display: flex;
-            align-items: center;
-            gap: 15px; /* Hapësirë midis elementeve */
+        .navbar-brand {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            background: -webkit-linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: transform 0.3s ease;
         }
 
-        .navbar-collapse {
-            display: flex;
-            justify-content: space-between;
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        .navbar {
+            padding: 1rem 2rem;
+            background: white !important;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand {
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            transform: translateY(-2px);
+        }
+
+        .nav-link {
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 1rem !important;
+            color: var(--text-color) !important;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover::after {
             width: 100%;
-        }
-
-        .nav-item {
-            list-style: none;
-            margin-right: 15px; /* Hapësirë për çdo element */
         }
 
         .search-form {
             display: flex;
             align-items: center;
-            background-color: #f9f9f9;
-            padding: 8px 12px;
-            border-radius: 25px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            width: auto;
-            max-width: 350px;
+            background: #f8f9fa;
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
         }
 
-        /* Rregullimi i input-it */
+        .search-form:focus-within {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+
         .search-form input {
-            padding: 8px 12px;
-            margin-right: 10px;
-            border: 2px solid #ccc;
-            border-radius: 25px;
-            font-size: 14px;
-            width: 100%; /* E bën inputin të mbushë hapësirën */
+            border: none;
+            background: transparent;
+            padding: 0.5rem;
+            width: 200px;
             outline: none;
-            transition: border-color 0.3s ease;
+            color: var(--text-color);
         }
 
-        /* Përdorim ngjyrë më të errët për input kur është fokusuar */
-        .search-form input:focus {
-            border-color: #007bff;
-        }
-
-        /* Rregullimi i butonit */
         .search-form button {
-            padding: 8px 15px;
-            border: 2px solid ;
-            background-color: #000000;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
-            font-size: 14px;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
+            border: none;
+            padding: 0.5rem 1.25rem;
+            border-radius: 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
 
-        /* Efekti hover për butonin */
         .search-form button:hover {
-            background-color: #000000;
-            transform: translateY(-2px); /* Efekti i lëvizjes kur kalon me maus */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(33, 147, 176, 0.3);
         }
 
-            /* Efekti hover për formën e input-it */
-            .search-form:hover {
-                box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
+        .logout-btn {
+            color: #dc3545 !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            color: #bd2130 !important;
+            transform: translateY(-1px);
+        }
+
+        @@media (max-width: 768px) {
+            .navbar {
+                padding: 0.5rem 1rem;
             }
+
+            .search-form {
+                margin-top: 1rem;
+                width: 100%;
+            }
+
+            .search-form input {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid d-flex align-items-center">
-                <!-- Emri i faqes dhe lidhjet -->
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MyBarber</a>
-                <div class="navbar-collapse collapse d-flex justify-content-between w-100">
-                    <ul class="navbar-nav flex-grow-1 d-flex align-items-center">
+        <nav class="navbar navbar-expand-sm navbar-light border-bottom box-shadow">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">MyBarber</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                       
+
                         @if (ViewContext.HttpContext.Session.GetInt32("UserId") != null)
                         {
-                            <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="MyAccount">My Account</a></li>
-                            <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Barber" asp-action="Index">Barbers</a></li>
-
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="User" asp-action="MyAccount">My Account</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Barber" asp-action="Index">Barbers</a>
+                            </li>
                         }
                         else if (ViewContext.HttpContext.Session.GetInt32("BarberId") != null)
                         {
-                            <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Barber" asp-action="MyAccount">My Account</a></li>
-                            <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Appointment" asp-action="ManageAppointments">My Appointments</a></li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Barber" asp-action="Dashboard">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Appointment" asp-action="ManageAppointments">My Appointments</a>
+                            </li>
                         }
                         else
                         {
-                            <li class="nav-item"> <a method="GET" class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Index">Login</a></li>
-                            <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="RegisterChoice">Register</a></li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Login" asp-action="Index">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Home" asp-action="RegisterChoice">Register</a>
+                            </li>
                         }
-                        <li>
-                            @if (ViewContext.HttpContext.Session.GetInt32("UserId") != null || ViewContext.HttpContext.Session.GetInt32("BarberId") != null)
-                            {
-                                <form method="post" asp-controller="User" asp-action="Logout" style="display: inline;">
-                                    <button type="submit" class="nav-link text-danger" style="background: none; border: none; padding: 0; cursor: pointer;">
-                                        Logout
-                                    </button>
-                                </form>
-                            }
-                        </li>
-                        <li style="list-style-type: none;" class="d-none d-sm-inline-block ms-3">
-                            <form method="get" action="/Barber/Search" class="search-form">
-                                <input type="text" name="query" placeholder="Search barbers..." />
-                                <button type="submit">Search</button>
-                            </form>
-                        </li>
-
                     </ul>
+
+                    @if (ViewContext.HttpContext.Session.GetInt32("UserId") != null || ViewContext.HttpContext.Session.GetInt32("BarberId") != null)
+                    {
+                        <form method="post" asp-controller="User" asp-action="Logout" class="d-inline me-3">
+                            <button type="submit" class="nav-link logout-btn border-0 bg-transparent">
+                                <i class="fas fa-sign-out-alt me-1"></i> Logout
+                            </button>
+                        </form>
+                    }
+
+                    <form class="search-form" method="get" action="/Barber/Search">
+                        <input type="text" name="searchTerm" placeholder="Search barbers...">
+                        <button type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
                 </div>
             </div>
         </nav>
     </header>
 
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    <script src="https://kit.fontawesome.com/d8ce167a50.js" crossorigin="anonymous"></script>
 </body>
 </html>
