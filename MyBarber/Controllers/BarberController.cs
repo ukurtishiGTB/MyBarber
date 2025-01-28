@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MyBarber.Data;
 using MyBarber.Models;
 using MyBarber.ViewModels;
@@ -14,6 +15,7 @@ namespace MyBarber.Controllers
         {
             _context = context;
         }
+        [HttpGet("Index")]
         public IActionResult Index()
         {
             var barbers = _context.Barbers
@@ -110,20 +112,26 @@ namespace MyBarber.Controllers
             var barberId = HttpContext.Session.GetInt32("BarberId");
             if (barberId == null) return RedirectToAction("Login");
 
-            var barber = _context.Barbers.FirstOrDefault(b => b.Id == barberId);
+            var barber = _context.Barbers
+                .Include(b => b.Ratings)
+                .FirstOrDefault(b => b.Id == barberId);
             return View(barber);
         }
         [HttpGet("Details/{id}")]
         public IActionResult Details(int id)
         {
-            var barber = _context.Barbers.FirstOrDefault(b => b.Id == id);
+            var barber = _context.Barbers
+                .Include(b => b.Ratings) // Include Ratings
+                .FirstOrDefault(b => b.Id == id);
+
             if (barber == null)
             {
-                return NotFound();
+                return NotFound("Barber not found.");
             }
 
             return View(barber);
         }
+
         [HttpGet("Search")]
         public IActionResult Search(string query)
         {
@@ -142,9 +150,87 @@ namespace MyBarber.Controllers
 
             return View(barbers.ToList());
         }
+        [HttpGet]
+        public IActionResult Ratings(int barberId)
+        {
+            var barber = _context.Barbers
+                .Include(b => b.Ratings)
+                .FirstOrDefault(b => b.Id == barberId);
+
+            if (barber == null)
+            {
+                return NotFound("Barber not found.");
+            }
+
+            // Map the data to the view model
+            var viewModel = new RatingsViewModel
+            {
+                BarberId = barber.Id,
+                BarberName = barber.Name,
+                BarberLocation = barber.Location,
+                BarberPhoneNumber = barber.PhoneNumber,
+                BarberRating = barber.Rating,
+                BarberNumberOfRatings = barber.NumberOfRatings,
+                Ratings = barber.Ratings.Select(r => new RatingViewModel
+                {
+                    Stars = r.Stars,
+                    Comment = r.Comment
+                }).ToList()
+            };
+
+            return View(viewModel); // Pass the strongly-typed view model to the view
+        }
 
 
+        [HttpGet("SubmitRating")]
+        public IActionResult SubmitRating(int id) // `id` is the BarberId
+        {
+            var barber = _context.Barbers.FirstOrDefault(b => b.Id == id);
+            if (barber == null)
+            {
+                return NotFound("Barber not found.");
+            }
 
+            var model = new RatingViewModel
+            {
+                BarberId = id
+            };
+
+            return View(model); // Render the view with the barber's ID
+        }
+
+        [HttpPost("SubmitRating")]
+        public IActionResult SubmitRating(RatingViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid rating data.");
+            }
+
+            var barber = _context.Barbers.FirstOrDefault(b => b.Id == model.BarberId);
+            if (barber == null)
+            {
+                return NotFound("Barber not found.");
+            }
+
+            // Add the new rating
+            var rating = new Rating
+            {
+                BarberId = model.BarberId,
+                UserId = HttpContext.Session.GetInt32("UserId").Value, // Current user
+                Stars = model.Stars,
+                Comment = model.Comment
+            };
+            _context.Ratings.Add(rating);
+
+            // Update barber's average rating
+            barber.NumberOfRatings++;
+            barber.Rating = ((barber.Rating * (barber.NumberOfRatings - 1)) + model.Stars) / barber.NumberOfRatings;
+
+            _context.SaveChanges();
+
+            return RedirectToAction("Ratings", new { barberId = model.BarberId });
+        }
     }
 
 

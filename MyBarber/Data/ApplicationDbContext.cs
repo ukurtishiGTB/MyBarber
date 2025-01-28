@@ -14,6 +14,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<Appointment> Appointments { get; set; }
     public DbSet<LoyaltyProgram> LoyaltyPrograms { get; set; }
 
+    public DbSet<Rating> Ratings { get; set; }
+
     public DbSet<Notification> Notifications { get; set; }
 
 }

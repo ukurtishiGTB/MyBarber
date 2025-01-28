@@ -1,24 +1,244 @@
 ﻿@model IEnumerable<MyBarber.Models.Barber>
 
-<!-- Display Search Results -->
-@if (Model != null && Model.Any())
-{
-    <h3>Search Results:</h3>
-    <div>
-        @foreach (var barber in Model)
-        {
-            <div class="barber-card">
-                <h4>@barber.Name</h4>
-                <p><strong>Location:</strong> @barber.Location</p>
-                <p><strong>Rating:</strong> @barber.Rating</p>
-                <p><strong>Services:</strong> @barber.Services</p>
-                <a href="/Barber/Details/@barber.Id">View Profile</a>
-            </div>
-            <hr />
-        }
-    </div>
-}
-else
-{
-    <p>No barbers found matching your criteria.</p>
-}
+<style>
+    :root {
+        --primary-color: #1e272e;
+        --accent-color: #c4a35a;
+        --text-color: #333;
+        --light-bg: #f9f9f9;
+    }
+
+    .search-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem;
+        background: var(--light-bg);
+    }
+
+    .search-title {
+        font-size: 3rem;
+        font-weight: 700;
+        text-align: center;
+        color: var(--primary-color);
+        margin-bottom: 3rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        position: relative;
+    }
+
+    .search-title::after {
+        content: '';
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: var(--accent-color);
+    }
+
+    .barber-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 2.5rem;
+        padding: 1.5rem;
+    }
+
+    .barber-card {
+        position: relative;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .barber-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 8px;
+        background: linear-gradient(90deg, var(--accent-color), var(--primary-color));
+    }
+
+    .barber-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+
+    .card-header {
+        background: var(--primary-color);
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card-header::after {
+        content: '';
+        position: absolute;
+        bottom: -50%;
+        right: -50%;
+        width: 200px;
+        height: 200px;
+        background: var(--accent-color);
+        opacity: 0.1;
+        border-radius: 50%;
+    }
+
+    .barber-name {
+        font-size: 1.8rem;
+        margin: 0;
+        color: white;
+        font-weight: 600;
+        position: relative;
+        z-index: 1;
+    }
+
+    .card-body {
+        padding: 2rem;
+    }
+
+    .barber-info {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding: 0.8rem;
+        background: var(--light-bg);
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+    .barber-info:hover {
+        transform: translateX(5px);
+        background: #f0f0f0;
+    }
+
+    .barber-info i {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: white;
+        border-radius: 50%;
+        margin-right: 15px;
+        color: var(--accent-color);
+        font-size: 1.2rem;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+
+    .barber-info span {
+        font-size: 1.1rem;
+        color: var(--text-color);
+        font-weight: 500;
+    }
+
+    .view-profile-btn {
+        display: block;
+        width: 100%;
+        padding: 1.2rem;
+        background: var(--primary-color);
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        border: 2px solid var(--primary-color);
+    }
+
+    .view-profile-btn:hover {
+        background: transparent;
+        color: var(--primary-color);
+    }
+
+    .no-results {
+        text-align: center;
+        padding: 5rem 2rem;
+        background: white;
+        border-radius: 20px;
+        margin: 3rem auto;
+        max-width: 700px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    }
+
+    .no-results i {
+        font-size: 4rem;
+        color: var(--accent-color);
+        margin-bottom: 1.5rem;
+        display: block;
+    }
+
+    .no-results p {
+        font-size: 1.4rem;
+        color: var(--text-color);
+        margin: 0;
+        font-weight: 500;
+    }
+
+    @@media (max-width: 768px) {
+    .search-container {
+        padding: 2rem 1rem;
+    }
+
+    .search-title {
+        font-size: 2.2rem;
+    }
+
+    .barber-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        padding: 1rem;
+    }
+
+    .barber-card {
+        margin: 0 1rem;
+    }
+    }
+</style>
+
+<div class="search-container">
+    @if (Model != null && Model.Any())
+    {
+        <h3 class="search-title">Elite Barbers</h3>
+        <div class="barber-grid">
+            @foreach (var barber in Model)
+            {
+                <div class="barber-card">
+                    <div class="card-header">
+                        <h4 class="barber-name">@barber.Name</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="barber-info">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>@barber.Location</span>
+                        </div>
+                        <div class="barber-info">
+                            <i class="fas fa-star"></i>
+                            <span>@barber.Rating out of 5</span>
+                        </div>
+                        <div class="barber-info">
+                            <i class="fas fa-cut"></i>
+                            <span>@barber.Services</span>
+                        </div>
+                        <a href="/Barber/Details/@barber.Id" class="view-profile-btn">
+                            Book Now
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="no-results">
+            <i class="fas fa-scissors"></i>
+            <p>No barbers found matching your criteria.</p>
+        </div>
+    }
+</div>

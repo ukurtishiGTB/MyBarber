@@ -1,0 +1,29 @@
+﻿@using MyBarber.ViewModels
+@model RatingsViewModel
+
+<h2>@Model.BarberName - Ratings</h2>
+<p><strong>Location:</strong> @Model.BarberLocation</p>
+<p><strong>Phone Number:</strong> @Model.BarberPhoneNumber</p>
+<p><strong>Average Rating:</strong> @Model.BarberRating (based on @Model.BarberNumberOfRatings reviews)</p>
+
+<hr />
+
+<h3>Reviews</h3>
+@if (Model.Ratings.Any())
+{
+    <ul>
+        @foreach (var rating in Model.Ratings)
+        {
+            <li>
+                <strong>@rating.Stars stars</strong>
+                <p>@rating.Comment</p>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No reviews yet.</p>
+}
+
+

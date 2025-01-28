@@ -21,9 +21,11 @@ public class Barber
     public string? ProfileImage { get; set; } //url to picture
     [Range(0,5)]
     public double? Rating { get; set; } = 0;
+    public int? NumberOfRatings { get; set; } = 0; // Number of ratings
     public string? Services { get; set; }
     public bool? isActive { get; set; }
     
     public ICollection<Appointment> Appointments { get; set; }
+    public ICollection<Rating> Ratings { get; set; }
 
 }
