@@ -104,12 +104,14 @@ public class AppointmentController : Controller
         }
 
         var userId = GetCurrentUserId();
+        var appointmentDateTime = model.Date.Date + model.SelectedTimeSlot.TimeOfDay;
+
 
         var appointment = new Appointment
         {
             UserId = userId,
             BarberId = model.BarberId,
-            AppointmentDate = model.SelectedTimeSlot,
+            AppointmentDate = appointmentDateTime,
             Status = AppointmentStatus.Pending
         };
 

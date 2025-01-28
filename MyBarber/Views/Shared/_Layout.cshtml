@@ -155,6 +155,48 @@
             .list-group-item:hover {
                 background-color: #f8f9fa; /* Highlight on hover */
             }
+        .notification-bell {
+            position: relative;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .notification-bell i {
+            font-size: 1.25rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+            color: white;
+            border-radius: 50%;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: bold;
+            transform: translate(25%, -25%);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .notification-bell:hover {
+            transform: translateY(-2px);
+        }
+
+        .notification-bell.active i {
+            animation: bell-ring 1s ease;
+        }
+
+        @@keyframes bell-ring {
+            0%, 100% { transform: rotate(0); }
+            20%, 60% { transform: rotate(15deg); }
+            40%, 80% { transform: rotate(-15deg); }
+        }
     </style>
 </head>
 <body>
@@ -212,17 +254,25 @@
 
                     @if (ViewContext.HttpContext.Session.GetInt32("BarberId") != null)
                     {
-                        var barberId = HttpContextAccessor.HttpContext.Session.GetInt32("BarberId");
-                        var unreadCount = DbContext.Notifications.Count(n => n.BarberId == barberId && !n.IsRead);
-
-                        <div class="dropdown">
-                            <a href="#" class="position-relative dropdown-toggle" id="notificationDropdown" data-bs-toggle="dropdown">
-                                <i class="bi bi-bell" style="font-size: 1.5rem;"></i>
-                                <span class="badge bg-danger position-absolute top-0 start-100 translate-middle">
-                                    @unreadCount
-                                </span>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
+                        <div class="nav-item dropdown">
+                            <div id="notification-bell" class="notification-bell" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-bell"></i>
+                                @{
+                                    var barberId = HttpContextAccessor.HttpContext.Session.GetInt32("BarberId");
+                                    var notificationCount = 0;
+            
+                                    if (barberId != null)
+                                    {
+                                        notificationCount = DbContext.Notifications.Count(n => n.BarberId == barberId);
+                                    }
+            
+                                    if (notificationCount > 0)
+                                    {
+                                        <span class="notification-badge">@notificationCount</span>
+                                    }
+                                }
+                            </div>
+                            <div class="dropdown-menu dropdown-menu-end">
                                 @await Html.PartialAsync("_NotificationList")
                             </div>
                         </div>
@@ -248,15 +298,28 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script>
-        document.getElementById("notificationDropdown").addEventListener("click", function () {
+        document.getElementById("notification-bell").addEventListener("click", function () {
             fetch('/Appointment/MarkNotificationsAsRead', { method: 'POST' })
                 .then(response => {
                     if (response.ok) {
-                        // Optionally, reload the page or update the counter dynamically
-                        document.querySelector('.badge.bg-danger').innerText = '0'; // Reset the counter to 0
+                        sessionStorage.setItem('notificationsRead', 'true');
+                        // Reset the counter dynamically
+                        const badge = document.querySelector('.notification-badge');
+                        if (badge) {
+                            badge.innerText = '0'; // Reset the counter to 0
+                            badge.style.display = 'none'; // Optionally hide the badge if needed
+                        }
                     }
                 })
                 .catch(error => console.error('Error marking notifications as read:', error));
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            if (sessionStorage.getItem('notificationsRead') === 'true') {
+                const badge = document.querySelector('.notification-badge');
+                if (badge) {
+                    badge.style.display = 'none';
+                }
+            }
         });
     </script>
 
