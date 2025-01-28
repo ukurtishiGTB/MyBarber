@@ -6,7 +6,16 @@
     <div class="hero-content">
         <h1 class="main-title">Welcome To MyBarber</h1>
         <p class="hero-text">Book your perfect haircut with our professional barbers</p>
-        <a href="#top-barbers" class="cta-button">Find Your Barber</a>
+        <div class="hero-buttons">
+            <a href="#top-barbers" class="cta-button primary">
+                <i class="fas fa-cut"></i>
+                Find Your Barber
+            </a>
+            <a href="#how-it-works" class="cta-button secondary">
+                <i class="fas fa-info-circle"></i>
+                How It Works
+            </a>
+        </div>
     </div>
 </div>
 
@@ -18,14 +27,54 @@
     </div>
 }
 
+<section id="how-it-works" class="steps-section">
+    <div class="section-header">
+        <h2>How It Works</h2>
+        <p class="section-subtitle">Book your appointment in 3 simple steps</p>
+    </div>
+
+    <div class="steps-grid">
+        <div class="step-card">
+            <div class="step-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <h3>1. Choose a Barber</h3>
+            <p>Browse through our selection of professional barbers and find the perfect match for your style</p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-icon">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <h3>2. Select Time & Date</h3>
+            <p>Pick a convenient time slot from the barber's available schedule</p>
+        </div>
+
+        <div class="step-card">
+            <div class="step-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h3>3. Confirm Booking</h3>
+            <p>Confirm your appointment and receive instant confirmation</p>
+        </div>
+    </div>
+</section>
+
 @model IEnumerable<MyBarber.Models.Barber>
 
 <section id="top-barbers" class="barbers-section">
     <div class="section-header">
-        <h2>Top Barbers</h2>
-        <p class="section-subtitle">Choose from our selection of professional barbers</p>
+        <h2>Our Professional Barbers</h2>
+        <p class="section-subtitle">Expert stylists ready to serve you</p>
     </div>
-    
+
+    <div class="search-filter">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="barberSearch" placeholder="Search by name or location...">
+        </div>
+    </div>
+
     <div class="barber-grid">
         @foreach (var barber in Model)
         {
@@ -53,7 +102,7 @@
                 }
             }
         </span>
-                        <span class="rating-value">@Math.Round(barber.Rating ?? 0.0, 1).ToString("F1")</span>
+                        <span class="rating-value">@barber.Rating.ToString()</span>
                     </div>
                 </div>
                 <div class="barber-info">
@@ -68,171 +117,321 @@
     </div>
 </section>
 
+<section class="cta-section">
+    <div class="cta-content">
+        <h2>Ready for a Fresh Look?</h2>
+        <p>Join hundreds of satisfied customers and book your appointment today</p>
+        <a href="#top-barbers" class="cta-button primary">Book Now</a>
+    </div>
+</section>
+
 <style>
-.hero-section {
-    background: linear-gradient(135deg, #2193b0, #6dd5ed);
-    color: white;
-    padding: 4rem 2rem;
-    text-align: center;
-    margin-bottom: 3rem;
-    border-radius: 0 0 50px 50px;
-}
-
-.hero-content {
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.main-title {
-    font-size: 3.5rem;
-    margin-bottom: 1rem;
-    font-weight: 700;
-}
-
-.hero-text {
-    font-size: 1.2rem;
-    margin-bottom: 2rem;
-    opacity: 0.9;
-}
-
-.cta-button {
-    display: inline-block;
-    padding: 1rem 2rem;
-    background: white;
-    color: #2193b0;
-    text-decoration: none;
-    border-radius: 30px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
-
-.cta-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-.alert {
-    max-width: 800px;
-    margin: 2rem auto;
-    padding: 1rem;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.fade-in {
-    animation: fadeIn 0.5s ease-in;
-}
-
-@@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.barbers-section {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-}
-
-.section-header {
-    text-align: center;
-    margin-bottom: 3rem;
-}
-
-.section-header h2 {
-    font-size: 2.5rem;
-    color: #2193b0;
-    margin-bottom: 0.5rem;
-}
-
-.section-subtitle {
-    color: #666;
-    font-size: 1.1rem;
-}
-
-.barber-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-}
-
-.barber-card {
-    background: white;
-    border-radius: 15px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-}
-
-.barber-card:hover {
-    transform: translateY(-5px);
-}
-
-.barber-header {
-    text-align: center;
-    margin-bottom: 1.5rem;
-}
-
-.avatar {
-    font-size: 4rem;
-    color: #2193b0;
-    margin-bottom: 1rem;
-}
-
-.rating {
-    color: #ffd700;
-    margin-top: 0.5rem;
-}
-
-.rating-value {
-    color: #666;
-    margin-left: 0.5rem;
-}
-
-.barber-info {
-    margin-bottom: 1.5rem;
-}
-
-.barber-info p {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
-    color: #666;
-}
-
-.view-profile-btn {
-    display: block;
-    text-align: center;
-    padding: 0.75rem;
-    background: #2193b0;
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-}
-
-.view-profile-btn:hover {
-    background: #1a7a8c;
-    color: white;
-}
-
-@@media (max-width: 768px) {
-    .main-title {
-        font-size: 2.5rem;
-    }
-    
     .hero-section {
-        padding: 3rem 1rem;
+        background: linear-gradient(135deg, #2193b0, #6dd5ed);
+        color: white;
+        padding: 4rem 2rem;
+        text-align: center;
+        margin-bottom: 3rem;
+        border-radius: 0 0 50px 50px;
     }
-    
+
+    .hero-content {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .main-title {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
+    }
+
+    .hero-text {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+    }
+
+    .cta-button {
+        display: inline-block;
+        padding: 1rem 2rem;
+        background: white;
+        color: #2193b0;
+        text-decoration: none;
+        border-radius: 30px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .cta-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .alert {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 1rem;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .fade-in {
+        animation: fadeIn 0.5s ease-in;
+    }
+
+    @@keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .barbers-section {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .section-header h2 {
+        font-size: 2.5rem;
+        color: #2193b0;
+        margin-bottom: 0.5rem;
+    }
+
+    .section-subtitle {
+        color: #666;
+        font-size: 1.1rem;
+    }
+
     .barber-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .barber-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .barber-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .barber-header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .avatar {
+        font-size: 4rem;
+        color: #2193b0;
+        margin-bottom: 1rem;
+    }
+
+    .rating {
+        color: #ffd700;
+        margin-top: 0.5rem;
+    }
+
+    .rating-value {
+        color: #666;
+        margin-left: 0.5rem;
+    }
+
+    .barber-info {
+        margin-bottom: 1.5rem;
+    }
+
+    .barber-info p {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+        color: #666;
+    }
+
+    .view-profile-btn {
+        display: block;
+        text-align: center;
+        padding: 0.75rem;
+        background: #2193b0;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .view-profile-btn:hover {
+        background: #1a7a8c;
+        color: white;
+    }
+
+    @@media (max-width: 768px) {
+        .main-title {
+            font-size: 2.5rem;
+        }
+
+        .hero-section {
+            padding: 3rem 1rem;
+        }
+
+        .barber-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    .hero-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-top: 2rem;
+    }
+
+    .cta-button.primary {
+        background: white;
+        color: #2193b0;
+    }
+
+    .cta-button.secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        backdrop-filter: blur(10px);
+    }
+
+    .cta-button i {
+        margin-right: 0.5rem;
+    }
+
+    .steps-section {
+        max-width: 1200px;
+        margin: 4rem auto;
+        padding: 2rem;
+    }
+
+    .steps-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+    }
+
+    .step-card {
+        text-align: center;
+        padding: 2rem;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .step-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .step-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #2193b0, #6dd5ed);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        color: white;
+        font-size: 2rem;
+    }
+
+    .search-filter {
+        max-width: 600px;
+        margin: 2rem auto;
+    }
+
+    .search-box {
+        display: flex;
+        align-items: center;
+        background: white;
+        padding: 1rem;
+        border-radius: 30px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-box i {
+        color: #2193b0;
+        margin: 0 1rem;
+    }
+
+    .search-box input {
+        border: none;
+        flex: 1;
+        font-size: 1rem;
+        outline: none;
+    }
+
+    .cta-section {
+        background: linear-gradient(135deg, #2193b0, #6dd5ed);
+        color: white;
+        text-align: center;
+        padding: 4rem 2rem;
+        margin-top: 4rem;
+    }
+
+    .cta-content {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .cta-content h2 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .cta-content p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        opacity: 0.9;
+    }
+
+    @@media (max-width: 768px) {
+    .hero-buttons {
+        flex-direction: column;
+    }
+
+    .steps-grid {
         grid-template-columns: 1fr;
     }
-}
+
+    .cta-content h2 {
+        font-size: 2rem;
+    }
+    }
 </style>
+
+<script>
+    document.getElementById('barberSearch').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const barberCards = document.querySelectorAll('.barber-card');
+
+        barberCards.forEach(card => {
+            const name = card.querySelector('h3').textContent.toLowerCase();
+            const location = card.querySelector('.barber-info p').textContent.toLowerCase();
+
+            if (name.includes(searchTerm) || location.includes(searchTerm)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+</script>
 
 @section Scripts {
     <script src="https://kit.fontawesome.com/d8ce167a50.js" crossorigin="anonymous"></script>
