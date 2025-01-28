@@ -139,9 +139,19 @@
             <input class="form-input" type="password" id="password" name="Password" required placeholder="Choose a secure password">
         </div>
 
-        <div class="form-group">
+        <div class="form-group location-group">
             <label class="form-label" for="location">Location</label>
-            <input class="form-input" type="text" id="location" name="Location" required placeholder="Your salon location">
+            <div class="location-input-wrapper">
+                <input class="form-input" type="text" id="location" name="Location" required placeholder="Your salon location">
+                <button type="button" id="mapToggle" class="map-toggle">
+                    <i class="fas fa-map-marker-alt"></i>
+                </button>
+            </div>
+            <input type="hidden" id="longitude" name="Longitude">
+            <input type="hidden" id="latitude" name="Latitude">
+            <div id="map-container" class="map-container" style="display: none;">
+                <div id="map" class="location-map"></div>
+            </div>
         </div>
 
         <div class="form-group">
@@ -162,3 +172,77 @@
         <button type="submit" class="submit-btn">Create Barber Account</button>
     </form>
 </div>
+
+@section Scripts {
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
+
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoiYXJ0aGhoIiwiYSI6ImNtNmdwbG1ldjAzemMyanNiMm0xOTJtZDkifQ.JtmkzmQKTTPH6kcgXU-FzA';
+
+        // Initialize map
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v12',
+            center: [21.4254, 41.9965], // Skopje coordinates
+            zoom: 12
+        });
+
+        // Add navigation controls
+        map.addControl(new mapboxgl.NavigationControl());
+
+        // Add geocoder for address search
+        const geocoder = new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            mapboxgl: mapboxgl,
+            marker: false
+        });
+
+        // Add marker that can be dragged
+        const marker = new mapboxgl.Marker({
+            draggable: true
+        }).setLngLat([21.4254, 41.9965]).addTo(map);
+
+        // Update coordinates when marker is dragged
+        marker.on('dragend', updateLocation);
+
+        // Initialize location input with geocoder
+        geocoder.addTo('#location');
+
+        // Handle location selection
+        geocoder.on('result', (e) => {
+            const coords = e.result.center;
+            marker.setLngLat(coords);
+            map.flyTo({ center: coords });
+            updateLocation();
+        });
+
+        // Toggle map visibility
+        document.getElementById('mapToggle').addEventListener('click', () => {
+            const mapContainer = document.getElementById('map-container');
+            const isVisible = mapContainer.style.display !== 'none';
+            mapContainer.style.display = isVisible ? 'none' : 'block';
+            if (!isVisible) {
+                map.resize();
+            }
+        });
+
+        // Update hidden inputs with coordinates
+        function updateLocation() {
+            const lngLat = marker.getLngLat();
+            document.getElementById('longitude').value = lngLat.lng;
+            document.getElementById('latitude').value = lngLat.lat;
+            
+            // Reverse geocode to update location input
+            fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lngLat.lng},${lngLat.lat}.json?access_token=${mapboxgl.accessToken}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.features && data.features.length > 0) {
+                        document.getElementById('location').value = data.features[0].place_name;
+                    }
+                });
+        }
+    </script>
+}```
