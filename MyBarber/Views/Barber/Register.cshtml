@@ -1,5 +1,6 @@
 ﻿@model MyBarber.ViewModels.BarberRegisterViewModel
 
+// Add these styles in your existing style section
 <style>
     body {
         background-color: #f0f8ff;
@@ -173,76 +174,90 @@
     </form>
 </div>
 
+// Replace the entire Scripts section with this updated version
 @section Scripts {
-    <script src='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
-    <link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
+    <script src="https://kit.fontawesome.com/your-font-awesome-kit.js" crossorigin="anonymous"></script>
 
     <script>
-        mapboxgl.accessToken = 'pk.eyJ1IjoiYXJ0aGhoIiwiYSI6ImNtNmdwbG1ldjAzemMyanNiMm0xOTJtZDkifQ.JtmkzmQKTTPH6kcgXU-FzA';
+        document.addEventListener('DOMContentLoaded', function() {
+            mapboxgl.accessToken = 'pk.eyJ1IjoiYXJ0aGhoIiwiYSI6ImNtNmdwbG1ldjAzemMyanNiMm0xOTJtZDkifQ.JtmkzmQKTTPH6kcgXU-FzA';
 
-        // Initialize map
-        const map = new mapboxgl.Map({
-            container: 'map',
-            style: 'mapbox://styles/mapbox/streets-v12',
-            center: [21.4254, 41.9965], // Skopje coordinates
-            zoom: 12
-        });
+            // Initialize the map
+            const map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/streets-v12',
+                center: [21.4254, 41.9965], // Skopje coordinates
+                zoom: 12
+            });
 
-        // Add navigation controls
-        map.addControl(new mapboxgl.NavigationControl());
+            // Create a marker
+            const marker = new mapboxgl.Marker({
+                draggable: true
+            }).setLngLat([21.4254, 41.9965]);
 
-        // Add geocoder for address search
-        const geocoder = new MapboxGeocoder({
-            accessToken: mapboxgl.accessToken,
-            mapboxgl: mapboxgl,
-            marker: false
-        });
+            // Create the geocoder
+            const geocoder = new MapboxGeocoder({
+                accessToken: mapboxgl.accessToken,
+                mapboxgl: mapboxgl,
+                marker: false,
+                placeholder: 'Search for your location',
+                countries: 'mk', // Limit to Macedonia
+                types: 'address,poi' // Search for addresses and points of interest
+            });
 
-        // Add marker that can be dragged
-        const marker = new mapboxgl.Marker({
-            draggable: true
-        }).setLngLat([21.4254, 41.9965]).addTo(map);
+            // Add geocoder to the map
+            document.getElementById('location').style.display = 'none'; // Hide the original input
+            document.querySelector('.location-input-wrapper').insertBefore(
+                geocoder.onAdd(map), 
+                document.getElementById('mapToggle')
+            );
 
-        // Update coordinates when marker is dragged
-        marker.on('dragend', updateLocation);
+            // Handle location selection
+            geocoder.on('result', function(event) {
+                const coords = event.result.center;
+                marker.setLngLat(coords).addTo(map);
+                map.flyTo({ center: coords, zoom: 15 });
+                updateLocation(event.result.place_name, coords[0], coords[1]);
+            });
 
-        // Initialize location input with geocoder
-        geocoder.addTo('#location');
+            // Handle marker drag
+            marker.on('dragend', function() {
+                const lngLat = marker.getLngLat();
+                reverseGeocode(lngLat.lng, lngLat.lat);
+            });
 
-        // Handle location selection
-        geocoder.on('result', (e) => {
-            const coords = e.result.center;
-            marker.setLngLat(coords);
-            map.flyTo({ center: coords });
-            updateLocation();
-        });
+            // Toggle map visibility
+            document.getElementById('mapToggle').addEventListener('click', function() {
+                const mapContainer = document.getElementById('map-container');
+                const isVisible = mapContainer.style.display !== 'none';
+                mapContainer.style.display = isVisible ? 'none' : 'block';
+                if (!isVisible) {
+                    map.resize();
+                    marker.addTo(map);
+                }
+            });
 
-        // Toggle map visibility
-        document.getElementById('mapToggle').addEventListener('click', () => {
-            const mapContainer = document.getElementById('map-container');
-            const isVisible = mapContainer.style.display !== 'none';
-            mapContainer.style.display = isVisible ? 'none' : 'block';
-            if (!isVisible) {
-                map.resize();
+            // Update location inputs
+            function updateLocation(placeName, lng, lat) {
+                document.getElementById('location').value = placeName;
+                document.getElementById('longitude').value = lng;
+                document.getElementById('latitude').value = lat;
+            }
+
+            // Reverse geocoding
+            function reverseGeocode(lng, lat) {
+                fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${mapboxgl.accessToken}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.features && data.features.length > 0) {
+                            updateLocation(data.features[0].place_name, lng, lat);
+                        }
+                    });
             }
         });
-
-        // Update hidden inputs with coordinates
-        function updateLocation() {
-            const lngLat = marker.getLngLat();
-            document.getElementById('longitude').value = lngLat.lng;
-            document.getElementById('latitude').value = lngLat.lat;
-            
-            // Reverse geocode to update location input
-            fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lngLat.lng},${lngLat.lat}.json?access_token=${mapboxgl.accessToken}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.features && data.features.length > 0) {
-                        document.getElementById('location').value = data.features[0].place_name;
-                    }
-                });
-        }
     </script>
 }```
