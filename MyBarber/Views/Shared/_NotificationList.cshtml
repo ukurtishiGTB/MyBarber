@@ -1,0 +1,45 @@
+﻿@using Microsoft.EntityFrameworkCore
+@inject MyBarber.Data.ApplicationDbContext DbContext
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    var barberId = HttpContextAccessor.HttpContext.Session.GetInt32("BarberId");
+    var notifications = new List<MyBarber.Models.Notification>();
+
+    if (barberId != null)
+    {
+        notifications = DbContext.Notifications
+            .Where(n => n.BarberId == barberId)
+            .Include(n => n.Appointment) // Include the Appointment entity
+            .ThenInclude(a => a.User)   // Include the User entity from Appointment
+            .OrderByDescending(n => n.CreatedAt)
+            .ToList();
+    }
+}
+
+@if (notifications.Any())
+{
+    <ul class="list-group">
+        @foreach (var notification in notifications)
+        {
+            <li class="list-group-item">
+                <a href="@Url.Action("ManageAppointments", "Appointment")" class="text-decoration-none">
+                    @if (notification.Appointment?.User != null)
+                    {
+                        <strong>@notification.Appointment.User.Name made a booking.</strong>
+                    }
+                    else
+                    {
+                        <strong>Unknown User</strong>
+						<>made a booking.</>
+					}
+                </a>
+                <small class="text-muted d-block">@notification.CreatedAt.ToShortDateString()</small>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p class="text-muted text-center">No new notifications.</p>
+}

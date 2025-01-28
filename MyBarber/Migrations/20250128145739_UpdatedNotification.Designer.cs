@@ -12,8 +12,8 @@ using MyBarber.Data;
 namespace MyBarber.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250128134949_Notifications")]
-    partial class Notifications
+    [Migration("20250128145739_UpdatedNotification")]
+    partial class UpdatedNotification
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -78,6 +78,9 @@ namespace MyBarber.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("NumberOfRatings")
+                        .HasColumnType("int");
+
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -131,6 +134,9 @@ namespace MyBarber.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AppointmentId")
+                        .HasColumnType("int");
+
                     b.Property<int>("BarberId")
                         .HasColumnType("int");
 
@@ -146,9 +152,44 @@ namespace MyBarber.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AppointmentId");
+
                     b.HasIndex("BarberId");
 
                     b.ToTable("Notifications");
+                });
+
+            modelBuilder.Entity("MyBarber.Models.Rating", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("BarberId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Stars")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BarberId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Ratings");
                 });
 
             modelBuilder.Entity("MyBarber.Models.User", b =>
@@ -211,18 +252,45 @@ namespace MyBarber.Migrations
 
             modelBuilder.Entity("MyBarber.Models.Notification", b =>
                 {
+                    b.HasOne("MyBarber.Models.Appointment", "Appointment")
+                        .WithMany()
+                        .HasForeignKey("AppointmentId");
+
                     b.HasOne("MyBarber.Models.Barber", "Barber")
                         .WithMany()
                         .HasForeignKey("BarberId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Appointment");
+
                     b.Navigation("Barber");
+                });
+
+            modelBuilder.Entity("MyBarber.Models.Rating", b =>
+                {
+                    b.HasOne("MyBarber.Models.Barber", "Barber")
+                        .WithMany("Ratings")
+                        .HasForeignKey("BarberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MyBarber.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Barber");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MyBarber.Models.Barber", b =>
                 {
                     b.Navigation("Appointments");
+
+                    b.Navigation("Ratings");
                 });
 
             modelBuilder.Entity("MyBarber.Models.User", b =>
