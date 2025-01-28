@@ -10,11 +10,14 @@ namespace MyBarber.Controllers
     public class BarberController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IConfiguration _configuration;
 
-        public BarberController(ApplicationDbContext context)
+        public BarberController(ApplicationDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
+
         [HttpGet("Index")]
         public IActionResult Index()
         {
@@ -233,6 +236,29 @@ namespace MyBarber.Controllers
         }
     }
 
+    public IActionResult Map()
+    {
+        var barbers = _context.Barbers
+            .Where(b => b.isActive == true)
+            .Select(b => new BarberLocationDto
+            {
+                Id = b.Id,
+                Name = b.Name,
+                Location = b.Location,
+                Latitude = b.Latitude,
+                Longitude = b.Longitude,
+                Services = b.Services,
+                Rating = b.Rating
+            })
+            .ToList();
 
+        var viewModel = new BarberMapViewModel
+        {
+            Barbers = barbers,
+            GoogleMapsApiKey = _configuration["GoogleMaps:ApiKey"]
+        };
+
+        return View(viewModel);
+    }
 }
 

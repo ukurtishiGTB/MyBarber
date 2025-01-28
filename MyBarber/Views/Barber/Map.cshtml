@@ -1,0 +1,127 @@
+@model BarberMapViewModel
+@{
+    ViewData["Title"] = "Find Barbers Near You";
+}
+
+<div class="map-container">
+    <div class="map-search">
+        <input type="text" id="searchLocation" placeholder="Enter your location" class="search-input">
+        <button onclick="searchLocation()" class="search-button">
+            <i class="fas fa-search"></i> Search
+        </button>
+    </div>
+    <div id="map"></div>
+</div>
+
+<style>
+    .map-container {
+        position: relative;
+        height: calc(100vh - 100px);
+        margin: 20px;
+    }
+
+    #map {
+        height: 100%;
+        width: 100%;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .map-search {
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        display: flex;
+        gap: 10px;
+    }
+
+    .search-input {
+        padding: 12px 20px;
+        width: 300px;
+        border: none;
+        border-radius: 25px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        font-size: 16px;
+    }
+
+    .search-button {
+        padding: 12px 25px;
+        border: none;
+        border-radius: 25px;
+        background: #2193b0;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .search-button:hover {
+        background: #1c7a8f;
+    }
+</style>
+
+@section Scripts {
+    <script src="https://maps.googleapis.com/maps/api/js?key=@Model.GoogleMapsApiKey&libraries=places"></script>
+    <script>
+        let map;
+        let markers = [];
+        const barbers = @Json.Serialize(Model.Barbers);
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 42.0041, lng: 21.4343 }, // Centered on Skopje
+                zoom: 12
+            });
+
+            // Add markers for each barber
+            barbers.forEach(barber => {
+                addMarker(barber);
+            });
+        }
+
+        function addMarker(barber) {
+            const marker = new google.maps.Marker({
+                position: { lat: barber.latitude, lng: barber.longitude },
+                map: map,
+                title: barber.name
+            });
+
+            const infoWindow = new google.maps.InfoWindow({
+                content: `
+                    <div class="info-window">
+                        <h3>${barber.name}</h3>
+                        <p><strong>Location:</strong> ${barber.location}</p>
+                        <p><strong>Services:</strong> ${barber.services}</p>
+                        <p><strong>Rating:</strong> ${barber.rating || 'No ratings yet'}</p>
+                        <a href="/Barber/Details/${barber.id}" class="btn btn-primary">View Profile</a>
+                    </div>
+                `
+            });
+
+            marker.addListener('click', () => {
+                infoWindow.open(map, marker);
+            });
+
+            markers.push(marker);
+        }
+
+        function searchLocation() {
+            const input = document.getElementById('searchLocation').value;
+            const geocoder = new google.maps.Geocoder();
+
+            geocoder.geocode({ address: input }, (results, status) => {
+                if (status === 'OK') {
+                    const location = results[0].geometry.location;
+                    map.setCenter(location);
+                    map.setZoom(14);
+                } else {
+                    alert('Location not found. Please try again.');
+                }
+            });
+        }
+
+        // Initialize the map when the page loads
+        window.onload = initMap;
+    </script>
+}

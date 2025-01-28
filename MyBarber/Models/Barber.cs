@@ -24,6 +24,8 @@ public class Barber
     public int? NumberOfRatings { get; set; } = 0; // Number of ratings
     public string? Services { get; set; }
     public bool? isActive { get; set; }
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
     
     public ICollection<Appointment> Appointments { get; set; }
     public ICollection<Rating> Ratings { get; set; }
