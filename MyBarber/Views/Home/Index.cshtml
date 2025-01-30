@@ -322,27 +322,46 @@
             zoom: 12
         });
 
-        // Add navigation controls
         map.addControl(new mapboxgl.NavigationControl());
+
+        // Function to geocode address and add marker
+        async function addBarberMarker(barber) {
+            try {
+                const searchLocation = barber.location.toLowerCase().includes('skopje') 
+                    ? barber.location 
+                    : `${barber.location}, Skopje`;
+
+                const response = await fetch(
+                    `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(searchLocation)}.json?access_token=${mapboxgl.accessToken}`
+                );
+                const data = await response.json();
+
+                if (data.features && data.features.length > 0) {
+                    const [lng, lat] = data.features[0].center;
+
+                    const popup = new mapboxgl.Popup({ offset: 25 })
+                        .setHTML(`
+                            <h3>${barber.name}</h3>
+                            <p><i class="fas fa-map-marker-alt"></i> ${barber.location}</p>
+                            <p><i class="fas fa-cut"></i> ${barber.services}</p>
+                            <a href="/Barber/Details/${barber.id}" class="view-profile-btn">
+                                View Profile
+                            </a>
+                        `);
+
+                    new mapboxgl.Marker()
+                        .setLngLat([lng, lat])
+                        .setPopup(popup)
+                        .addTo(map);
+                }
+            } catch (error) {
+                console.error('Error geocoding address:', error);
+            }
+        }
 
         // Add markers for each barber
         barbers.forEach(barber => {
-            // Create a popup
-            const popup = new mapboxgl.Popup({ offset: 25 })
-                .setHTML(`
-                    <h3>${barber.name}</h3>
-                    <p><i class="fas fa-map-marker-alt"></i> ${barber.location}</p>
-                    <p><i class="fas fa-cut"></i> ${barber.services}</p>
-                    <a href="/Barber/Details/${barber.id}" class="view-profile-btn">
-                        View Profile
-                    </a>
-                `);
-
-            // Create a marker
-            new mapboxgl.Marker()
-                .setLngLat([barber.longitude, barber.latitude])
-                .setPopup(popup)
-                .addTo(map);
+            addBarberMarker(barber);
         });
 
         // Add search functionality
