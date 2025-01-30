@@ -70,29 +70,7 @@ namespace MyBarber.Controllers
 
             return View(model);
         }
-
-        /*
-        [HttpGet("Login")]
-        public IActionResult Login()
-        {
-            return View();
-        }
-
-        [HttpPost("Login")]
-        public IActionResult Login(BarberLoginViewModel model)
-        {
-            var barber = _context.Barbers.FirstOrDefault(b => b.Email == model.Email);
-            if (barber != null && BCrypt.Net.BCrypt.Verify(model.Password, barber.HashPassword))
-            {
-                HttpContext.Session.SetInt32("BarberId", barber.Id);
-                HttpContext.Session.SetString("BarberName", barber.Name);
-                return RedirectToAction("Index","Home");
-            }
-
-            ModelState.AddModelError(string.Empty, "Invalid login attempt");
-            return View(model);
-        }
-        */
+        
         [Route("MyAccount")]
         public IActionResult MyAccount()
         {
