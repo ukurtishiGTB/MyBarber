@@ -105,16 +105,21 @@ namespace MyBarber.Controllers
         public IActionResult Details(int id)
         {
             var barber = _context.Barbers
-                .Include(b => b.Ratings) // Include Ratings
+                .Include(b => b.Ratings) // Include reviews
+                .ThenInclude(r => r.User) // Include user details for ratings
+                .Include(b => b.Appointments) // Include appointments
+                .ThenInclude(a => a.User) // Include user details for appointments
                 .FirstOrDefault(b => b.Id == id);
 
             if (barber == null)
             {
-                return NotFound("Barber not found.");
+                return NotFound();
             }
 
             return View(barber);
         }
+
+
 
         [HttpGet("Search")]
         public IActionResult Search(string query)

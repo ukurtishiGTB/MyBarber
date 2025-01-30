@@ -86,7 +86,16 @@
             <p class="no-reviews">No reviews yet.</p>
         }
     </div>
+    <div class="actions">
+        <!-- Book Appointment Icon -->
+        <a asp-action="Book" asp-controller="Appointment" asp-route-barberId="@Model.Id" class="btn btn-primary action-icon">
+            <i class="fas fa-calendar-alt"></i> Book Appointment
+        </a>
+    </div>
+
+
 </div>
+
 
 <style>
 .barber-profile {
@@ -228,5 +237,60 @@
     .info-grid {
         grid-template-columns: 1fr;
     }
-}
+
+        .appointment-section, .review-submission {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+        }
+
+            .appointment-section h3, .review-submission h3 {
+                color: #2193b0;
+                margin-bottom: 1.5rem;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .appointment-section form, .review-submission form {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .appointment-section select, .review-submission select,
+            .appointment-section input, .review-submission textarea {
+                padding: 0.8rem;
+                border-radius: 5px;
+                border: 1px solid #ddd;
+                width: 100%;
+            }
+
+            .review-submission textarea {
+                min-height: 80px;
+                resize: vertical;
+            }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .action-icon {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.2rem;
+            font-size: 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+            .action-icon i {
+                font-size: 1.2rem;
+            }
+    }
 </style>
