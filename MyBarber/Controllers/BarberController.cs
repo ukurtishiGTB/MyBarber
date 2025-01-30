@@ -10,11 +10,14 @@ namespace MyBarber.Controllers
     public class BarberController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IConfiguration _configuration;
 
-        public BarberController(ApplicationDbContext context)
+        public BarberController(ApplicationDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
+
         [HttpGet("Index")]
         public IActionResult Index()
         {
@@ -64,6 +67,7 @@ namespace MyBarber.Controllers
                 // Redirect to My Account page
                 return RedirectToAction("Index", "Home");
             }
+
             return View(model);
         }
 
@@ -106,6 +110,7 @@ namespace MyBarber.Controllers
 
             return View(barber);
         }
+
         [Route("Dashboard")]
         public IActionResult Dashboard()
         {
@@ -117,6 +122,7 @@ namespace MyBarber.Controllers
                 .FirstOrDefault(b => b.Id == barberId);
             return View(barber);
         }
+
         [HttpGet("Details/{id}")]
         public IActionResult Details(int id)
         {
@@ -141,15 +147,16 @@ namespace MyBarber.Controllers
             {
                 // Search by multiple fields using a single query
                 barbers = barbers.Where(b =>
-                    b.Name.Contains(query) ||               // Search by barber name
-                    b.Location.Contains(query) ||           // Search by location
-                    b.Services.Contains(query) ||           // Search by services
-                    b.Rating.ToString().Contains(query)     // Search by rating (optional for numeric input)
+                        b.Name.Contains(query) || // Search by barber name
+                        b.Location.Contains(query) || // Search by location
+                        b.Services.Contains(query) || // Search by services
+                        b.Rating.ToString().Contains(query) // Search by rating (optional for numeric input)
                 );
             }
 
             return View(barbers.ToList());
         }
+
         [HttpGet]
         public IActionResult Ratings(int barberId)
         {
@@ -231,8 +238,32 @@ namespace MyBarber.Controllers
 
             return RedirectToAction("Ratings", new { barberId = model.BarberId });
         }
+
+
+        public IActionResult Map()
+        {
+            var barbers = _context.Barbers
+                .Where(b => b.isActive == true)
+                .Select(b => new BarberLocationDto
+                {
+                    Id = b.Id,
+                    Name = b.Name,
+                    Location = b.Location,
+                    Latitude = b.Latitude,
+                    Longitude = b.Longitude,
+                    Services = b.Services,
+                    Rating = b.Rating
+                })
+                .ToList();
+
+            var viewModel = new BarberMapViewModel
+            {
+                Barbers = barbers,
+                GoogleMapsApiKey = _configuration["GoogleMaps:ApiKey"]
+            };
+
+            return View(viewModel);
+        }
     }
-
-
 }
 

@@ -1,0 +1,14 @@
+﻿@inject MyBarber.Data.ApplicationDbContext DbContext
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    var barberId = HttpContextAccessor.HttpContext.Session.GetInt32("BarberId");
+    var count = 0;
+
+    if (barberId != null)
+    {
+        count = DbContext.Notifications.Count(n => n.BarberId == barberId && !n.IsRead);
+    }
+}
+
+@count

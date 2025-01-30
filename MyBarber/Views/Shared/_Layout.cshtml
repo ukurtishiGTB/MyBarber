@@ -1,4 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@inject MyBarber.Data.ApplicationDbContext DbContext
+@inject IHttpContextAccessor HttpContextAccessor
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +11,8 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/MyBarber.styles.css" asp-append-version="true"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
+    
     <style>
         :root {
             --primary-color: #2193b0;
@@ -139,6 +143,62 @@
                 width: 100%;
             }
         }
+
+        .dropdown-menu {
+            max-height: 300px; /* Limit the height for scrolling */
+            overflow-y: auto; /* Enable vertical scrolling */
+            width: 300px; /* Set a fixed width */
+        }
+
+        .list-group-item {
+            cursor: pointer;
+        }
+
+            .list-group-item:hover {
+                background-color: #f8f9fa; /* Highlight on hover */
+            }
+        .notification-bell {
+            position: relative;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .notification-bell i {
+            font-size: 1.25rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+            color: white;
+            border-radius: 50%;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: bold;
+            transform: translate(25%, -25%);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .notification-bell:hover {
+            transform: translateY(-2px);
+        }
+
+        .notification-bell.active i {
+            animation: bell-ring 1s ease;
+        }
+
+        @@keyframes bell-ring {
+            0%, 100% { transform: rotate(0); }
+            20%, 60% { transform: rotate(15deg); }
+            40%, 80% { transform: rotate(-15deg); }
+        }
     </style>
 </head>
 <body>
@@ -194,6 +254,33 @@
                         </form>
                     }
 
+                    @if (ViewContext.HttpContext.Session.GetInt32("BarberId") != null)
+                    {
+                        <div class="nav-item dropdown">
+                            <div id="notification-bell" class="notification-bell" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-bell"></i>
+                                @{
+                                    var barberId = HttpContextAccessor.HttpContext.Session.GetInt32("BarberId");
+                                    var notificationCount = 0;
+            
+                                    if (barberId != null)
+                                    {
+                                        notificationCount = DbContext.Notifications.Count(n => n.BarberId == barberId);
+                                    }
+            
+                                    if (notificationCount > 0)
+                                    {
+                                        <span class="notification-badge">@notificationCount</span>
+                                    }
+                                }
+                            </div>
+                            <div class="dropdown-menu dropdown-menu-end">
+                                @await Html.PartialAsync("_NotificationList")
+                            </div>
+                        </div>
+                    }
+
+
                     <form class="search-form" method="get" action="/Barber/Search">
                         <input type="text" name="searchTerm" placeholder="Search barbers...">
                         <button type="submit">
@@ -212,6 +299,33 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
+    <script>
+        document.getElementById("notification-bell").addEventListener("click", function () {
+            fetch('/Appointment/MarkNotificationsAsRead', { method: 'POST' })
+                .then(response => {
+                    if (response.ok) {
+                        sessionStorage.setItem('notificationsRead', 'true');
+                        // Reset the counter dynamically
+                        const badge = document.querySelector('.notification-badge');
+                        if (badge) {
+                            badge.innerText = '0'; // Reset the counter to 0
+                            badge.style.display = 'none'; // Optionally hide the badge if needed
+                        }
+                    }
+                })
+                .catch(error => console.error('Error marking notifications as read:', error));
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            if (sessionStorage.getItem('notificationsRead') === 'true') {
+                const badge = document.querySelector('.notification-badge');
+                if (badge) {
+                    badge.style.display = 'none';
+                }
+            }
+        });
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
     <script src="https://kit.fontawesome.com/d8ce167a50.js" crossorigin="anonymous"></script>
 </body>

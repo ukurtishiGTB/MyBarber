@@ -85,101 +85,56 @@ public class AppointmentController : Controller
 
         return View(viewModel);
     }
-
-   [HttpPost]
-public IActionResult Book(AppointmentBookingViewModel model)
-{
-    if (!ModelState.IsValid)
+    [HttpPost]
+    public IActionResult Book(AppointmentBookingViewModel model)
     {
-        Console.WriteLine("Validation Errors:");
-        foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+        if (!ModelState.IsValid)
         {
-            Console.WriteLine(error.ErrorMessage); // Log the error message
+            // Regenerate available dates and time slots
+            model.AvailableDates = Enumerable
+                .Range(0, 5)
+                .Select(days => DateTime.Now.Date.AddDays(days))
+                .ToList();
+
+            model.AvailableTimeSlots = GetAllTimeSlots()
+                .Select(slot => model.Date.Date.Add(DateTime.Parse(slot).TimeOfDay))
+                .ToList();
+
+            return View(model);
         }
 
-        // Regenerate available dates and time slots for redisplaying the form
-        model.AvailableDates = Enumerable
-            .Range(0, 5)
-            .Select(days => DateTime.Now.Date.AddDays(days))
-            .ToList();
+        var userId = GetCurrentUserId();
+        var appointmentDateTime = model.Date.Date + model.SelectedTimeSlot.TimeOfDay;
 
-        model.AvailableTimeSlots = GetAllTimeSlots()
-            .Select(slot => model.Date.Date.Add(DateTime.Parse(slot).TimeOfDay))
-            .ToList();
 
-        return View(model); // Return the form with errors
-    }
+        var appointment = new Appointment
+        {
+            UserId = userId,
+            BarberId = model.BarberId,
+            AppointmentDate = appointmentDateTime,
+            Status = AppointmentStatus.Pending
+        };
 
-    // Get the user ID from session
-    var userId = GetCurrentUserId();
-
-    // Validate the selected date is within the allowed range (today to 5 days ahead)
-    var validDates = Enumerable
-        .Range(0, 5)
-        .Select(days => DateTime.Now.Date.AddDays(days))
-        .ToList();
-
-    if (!validDates.Contains(model.Date.Date))
-    {
-        ModelState.AddModelError("", "Selected date is not valid.");
-
-        // Regenerate form data
-        model.AvailableDates = validDates;
-        model.AvailableTimeSlots = GetAllTimeSlots()
-            .Select(slot => model.Date.Date.Add(DateTime.Parse(slot).TimeOfDay))
-            .ToList();
-
-        return View(model);
-    }
-
-    // Correct SelectedTimeSlot's date to match the selected Date
-    model.SelectedTimeSlot = model.Date.Date.Add(model.SelectedTimeSlot.TimeOfDay);
-
-    // Ensure the selected time slot is valid
-    var validTimeSlots = GetAllTimeSlots()
-        .Select(slot => model.Date.Date.Add(DateTime.Parse(slot).TimeOfDay))
-        .ToList();
-
-    if (!validTimeSlots.Contains(model.SelectedTimeSlot))
-    {
-        ModelState.AddModelError("", "Invalid time slot selected.");
-
-        // Regenerate form data
-        model.AvailableDates = validDates;
-        model.AvailableTimeSlots = validTimeSlots;
-
-        return View(model);
-    }
-
-    // Create a new appointment
-    var appointment = new Appointment
-    {
-        UserId = userId, // Use session UserId
-        BarberId = model.BarberId,
-        AppointmentDate = model.SelectedTimeSlot, // Use the corrected DateTime
-        Status = AppointmentStatus.Pending
-    };
-
-    try
-    {
-        // Save the appointment to the database
         _dbContext.Appointments.Add(appointment);
         _dbContext.SaveChanges();
+
+        // Create a notification linked to the appointment
+        var notification = new Notification
+        {
+            BarberId = model.BarberId,
+            AppointmentId = appointment.Id, // Link to the appointment
+            Message = $"You have a new appointment scheduled on {model.SelectedTimeSlot}.",
+            CreatedAt = DateTime.UtcNow,
+            IsRead = false
+        };
+
+        _dbContext.Notifications.Add(notification);
+        _dbContext.SaveChanges();
+
+        return RedirectToAction("Confirmation");
     }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Error saving appointment: {ex.Message}");
 
-        // Show a user-friendly error
-        ModelState.AddModelError("", "An error occurred while booking the appointment. Please try again.");
-        model.AvailableDates = validDates;
-        model.AvailableTimeSlots = validTimeSlots;
 
-        return View(model);
-    }
-
-    return RedirectToAction("Confirmation");
-}
 
     public IActionResult Confirmation()
     {
@@ -198,6 +153,16 @@ public IActionResult Book(AppointmentBookingViewModel model)
             .Where(a => a.BarberId == barberId)
             .Include(a => a.User)
             .ToList();
+        
+        
+        var notifications = _dbContext.Notifications
+       .Where(n => n.BarberId == barberId && !n.IsRead)
+       .ToList();
+
+        foreach (var notification in notifications)
+        {
+            notification.IsRead = true;
+        }
 
         return View(pendingAppointments);
     }
@@ -253,4 +218,27 @@ public IActionResult Book(AppointmentBookingViewModel model)
 
         return Json(availableSlots);
     }
+    [HttpPost]
+    public IActionResult MarkNotificationsAsRead()
+    {
+        var barberId = HttpContext.Session.GetInt32("BarberId");
+        if (barberId == null)
+        {
+            return Unauthorized();
+        }
+
+        var unreadNotifications = _dbContext.Notifications
+            .Where(n => n.BarberId == barberId && !n.IsRead)
+            .ToList();
+
+        foreach (var notification in unreadNotifications)
+        {
+            notification.IsRead = true;
+        }
+
+        _dbContext.SaveChanges();
+
+        return Ok(); // Return a success response
+    }
+
 }
