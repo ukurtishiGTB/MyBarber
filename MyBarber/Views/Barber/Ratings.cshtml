@@ -1,29 +1,221 @@
 ﻿@using MyBarber.ViewModels
 @model RatingsViewModel
 
-<h2>@Model.BarberName - Ratings</h2>
-<p><strong>Location:</strong> @Model.BarberLocation</p>
-<p><strong>Phone Number:</strong> @Model.BarberPhoneNumber</p>
-<p><strong>Average Rating:</strong> @Model.BarberRating (based on @Model.BarberNumberOfRatings reviews)</p>
+<div class="ratings-container fade-in">
+    <div class="profile-hero">
+        <div class="hero-content">
+            <h1 class="profile-name">@Model.BarberName</h1>
+            <div class="profile-role">Ratings & Reviews</div>
 
-<hr />
+            <div class="stats-container">
+                <div class="stat-item">
+                    <div class="stat-value">@Model.BarberRating</div>
+                    <div class="stat-label">Average Rating</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">@Model.BarberNumberOfRatings</div>
+                    <div class="stat-label">Total Reviews</div>
+                </div>
+            </div>
 
-<h3>Reviews</h3>
-@if (Model.Ratings.Any())
-{
-    <ul>
-        @foreach (var rating in Model.Ratings)
+            <div class="barber-info">
+                <p><i class="fas fa-map-marker-alt"></i> @Model.BarberLocation</p>
+                <p><i class="fas fa-phone"></i> @Model.BarberPhoneNumber</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="reviews-container">
+        <h2 class="reviews-title">Customer Reviews</h2>
+        @if (Model.Ratings.Any())
         {
-            <li>
-                <strong>@rating.Stars stars</strong>
-                <p>@rating.Comment</p>
-            </li>
+            <div class="reviews-grid">
+                @foreach (var rating in Model.Ratings)
+                {
+                    <div class="review-card">
+                        <div class="stars">
+                            @for (int i = 0; i < rating.Stars; i++)
+                            {
+                                <i class="fas fa-star"></i>
+                            }
+                        </div>
+                        <p class="review-text">@rating.Comment</p>
+                    </div>
+                }
+            </div>
         }
-    </ul>
-}
-else
-{
-    <p>No reviews yet.</p>
-}
+        else
+        {
+            <div class="no-reviews">
+                <i class="fas fa-comment-slash"></i>
+                <p>No reviews yet.</p>
+            </div>
+        }
+    </div>
+</div>
 
+<style>
+    .ratings-container {
+        max-width: 1200px;
+        margin: 50px auto;
+        padding: 0 20px;
+    }
 
+    .profile-hero {
+        background: linear-gradient(135deg, #2193b0, #6dd5ed);
+        border-radius: 30px;
+        padding: 60px 40px;
+        color: white;
+        position: relative;
+        margin-bottom: 40px;
+    }
+
+    .profile-name {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin: 0;
+        background: linear-gradient(to right, #fff, #e0f7fa);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .profile-role {
+        font-size: 1.2rem;
+        color: #e0f7fa;
+        margin-top: 10px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+    }
+
+    .barber-info {
+        margin-top: 20px;
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        color: white;
+    }
+
+    .barber-info p {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .reviews-title {
+        text-align: center;
+        color: #2193b0;
+        font-size: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .reviews-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+    }
+
+    .review-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .review-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .stars {
+        color: #ffd700;
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+    }
+
+    .review-text {
+        color: #444;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    .no-reviews {
+        text-align: center;
+        padding: 50px;
+        color: #666;
+    }
+
+    .no-reviews i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: #2193b0;
+    }
+
+    .stats-container {
+        display: flex;
+        gap: 30px;
+        margin: 40px 0;
+        justify-content: center;
+    }
+
+    .stat-item {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 20px 40px;
+        border-radius: 15px;
+        text-align: center;
+    }
+
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #e0f7fa;
+    }
+
+    .stat-label {
+        color: rgba(255, 255, 255, 0.9);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-top: 5px;
+    }
+
+    .fade-in {
+        animation: fadeIn 0.5s ease-in;
+    }
+
+    @@keyframes fadeIn {
+        from { 
+            opacity: 0; 
+            transform: translateY(-10px); 
+        }
+        to { 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .profile-hero {
+            padding: 40px 20px;
+        }
+
+        .profile-name {
+            font-size: 2.5rem;
+        }
+
+        .barber-info {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stats-container {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .stat-item {
+            padding: 15px;
+        }
+    }
+</style>
