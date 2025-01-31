@@ -224,6 +224,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" asp-controller="Barber" asp-action="Index">Barbers</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Appointment" asp-action="MyAppointments">My Appointments</a>
+                            </li>
                         }
                         else if (ViewContext.HttpContext.Session.GetInt32("BarberId") != null)
                         {

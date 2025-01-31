@@ -29,7 +29,6 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
-<style >
 /* Style the search bar */
 form {
     display: flex;
@@ -74,4 +73,27 @@ button {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-</style >
+.notification-card {
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.notification-card.unread {
+  background-color: #f0f7ff;
+  border-left: 4px solid #2193b0;
+}
+
+.status-accepted {
+  color: #28a745;
+}
+
+.status-rejected {
+  color: #dc3545;
+}
+
+.status-pending {
+  color: #ffc107;
+}

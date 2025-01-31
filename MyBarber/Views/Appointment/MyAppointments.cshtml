@@ -1,0 +1,48 @@
+@model UserAppointmentsViewModel
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <h2>My Appointments</h2>
+            @foreach (var appointment in Model.Appointments)
+            {
+                <div class="appointment-card">
+                    <h3>Appointment with @appointment.Barber.Name</h3>
+                    <p>Date: @appointment.AppointmentDate.ToString("MMM dd, yyyy")</p>
+                    <p>Time: @appointment.AppointmentDate.ToString("hh:mm tt")</p>
+                    <p>Status: <span class="status-@appointment.Status.ToString().ToLower()">@appointment.Status</span></p>
+                </div>
+            }
+        </div>
+        
+        <div class="col-md-4">
+            <h2>Notifications</h2>
+            <div class="notifications-container">
+                @foreach (var notification in Model.Notifications)
+                {
+                    <div class="notification-card @(!notification.IsRead ? "unread" : "")" 
+                         data-notification-id="@notification.Id">
+                        <p>@notification.Message</p>
+                        <small>@notification.CreatedAt.ToString("MMM dd, yyyy hh:mm tt")</small>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            $('.notification-card.unread').click(function() {
+                var notificationId = $(this).data('notification-id');
+                var card = $(this);
+                
+                $.post('/Appointment/MarkUserNotificationAsRead', { notificationId: notificationId })
+                    .done(function() {
+                        card.removeClass('unread');
+                    });
+            });
+        });
+    </script>
+}

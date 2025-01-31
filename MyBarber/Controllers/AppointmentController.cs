@@ -258,4 +258,54 @@ public class AppointmentController : Controller
         return Ok(); // Return a success response
     }
 
+    // Add this method to AppointmentController
+public IActionResult MyAppointments()
+{
+    try
+    {
+        var userId = GetCurrentUserId();
+        
+        // Get appointments with notifications
+        var appointments = _dbContext.Appointments
+            .Include(a => a.Barber)
+            .Where(a => a.UserId == userId)
+            .OrderByDescending(a => a.AppointmentDate)
+            .ToList();
+
+        // Get user's notifications
+        var notifications = _dbContext.UserNotifications
+            .Where(n => n.UserId == userId)
+            .OrderByDescending(n => n.CreatedAt)
+            .ToList();
+
+        var viewModel = new UserAppointmentsViewModel
+        {
+            Appointments = appointments,
+            Notifications = notifications
+        };
+
+        return View(viewModel);
+    }
+    catch (UnauthorizedAccessException)
+    {
+        return RedirectToAction("Login", "Login");
+    }
+}
+
+[HttpPost]
+public IActionResult MarkUserNotificationAsRead(int notificationId)
+{
+    var userId = GetCurrentUserId();
+    var notification = _dbContext.UserNotifications
+        .FirstOrDefault(n => n.Id == notificationId && n.UserId == userId);
+
+    if (notification != null)
+    {
+        notification.IsRead = true;
+        _dbContext.SaveChanges();
+    }
+
+    return Ok();
+}
+
 }
