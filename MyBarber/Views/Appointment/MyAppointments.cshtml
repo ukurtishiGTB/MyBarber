@@ -1,0 +1,144 @@
+@model MyBarber.ViewModels.UserAppointmentsViewModel
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <h2 class="text-center mb-4" style="color: #2193b0; font-weight: 700;">My Appointments</h2>
+            
+            @if (!Model.Appointments.Any())
+            {
+                <div class="text-center p-5 rounded shadow-sm" style="background: #f8f9fa;">
+                    <i class="fas fa-calendar-times fa-3x mb-3" style="color: #2193b0;"></i>
+                    <h4>No appointments yet</h4>
+                    <p class="text-muted">Book your first appointment with one of our barbers!</p>
+                </div>
+            }
+            else
+            {
+                <div class="appointments-container">
+                    @foreach (var appointment in Model.Appointments)
+                    {
+                        <div class="appointment-card mb-4 p-4 rounded shadow-sm" 
+                             style="background: white; border-left: 4px solid #2193b0; transition: all 0.3s ease;">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h3 class="mb-0" style="color: #2193b0; font-weight: 600;">
+                                    <i class="fas fa-user-circle me-2"></i>
+                                    @appointment.Barber.Name
+                                </h3>
+                                <span class="status-badge status-@appointment.Status.ToString().ToLower()">
+                                    @appointment.Status
+                                </span>
+                            </div>
+                            
+                            <div class="appointment-details">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p class="mb-2">
+                                            <i class="far fa-calendar-alt me-2" style="color: #6dd5ed;"></i>
+                                            @appointment.AppointmentDate.ToString("MMM dd, yyyy")
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="mb-2">
+                                            <i class="far fa-clock me-2" style="color: #6dd5ed;"></i>
+                                            @appointment.AppointmentDate.ToString("hh:mm tt")
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .appointments-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .appointment-card {
+        background: white;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .appointment-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+    }
+
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 500;
+        font-size: 0.875rem;
+    }
+
+    .status-pending {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+
+    .status-accepted {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .status-rejected {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .appointment-details {
+        background-color: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-top: 1rem;
+    }
+
+    .appointment-details p {
+        margin-bottom: 0;
+        color: #495057;
+    }
+
+    @@media (max-width: 768px) {
+        .appointment-card {
+            margin: 0.5rem;
+        }
+    }
+         /* Add these keyframes */
+     @@keyframes fadeInUp {
+         from {
+             opacity: 0;
+             transform: translateY(20px);
+         }
+         to {
+             opacity: 1;
+             transform: translateY(0);
+         }
+     }
+
+    .appointment-card {
+        /* Update the animation properties */
+        opacity: 1; /* Set initial opacity to 1 */
+        animation: fadeInUp 0.5s ease forwards;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Remove the opacity setting from JavaScript
+            $('.appointment-card').each(function(index) {
+                $(this).css({
+                    'animation-delay': `${index * 0.1}s`
+                });
+            });
+        });
+    </script>
+
+
+}

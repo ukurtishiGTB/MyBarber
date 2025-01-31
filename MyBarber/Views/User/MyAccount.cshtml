@@ -26,9 +26,9 @@
         </div>
     </div>
 
-    <a href="/User/Dashboard" class="dashboard-btn">
+    <a href="/Appointment/MyAppointments" class="dashboard-btn">
         <i class="fas fa-columns"></i>
-        Go to Dashboard
+        Go to My Appointments
     </a>
     <form asp-action="Delete" asp-controller="User" asp-route-id="@Model.Id" method="post"
           onsubmit="return confirm('Are you sure you want to delete your profile? This action cannot be undone.');">
