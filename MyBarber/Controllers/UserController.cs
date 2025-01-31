@@ -86,5 +86,22 @@ namespace MyBarber.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index","Home");
         }
+        [HttpPost("Delete/{id}")]
+        public IActionResult Delete(int id)
+        {
+            var user = _context.Users.Find(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            _context.Users.Remove(user);
+            _context.SaveChanges();
+
+            // Clear session after deleting the account
+            HttpContext.Session.Clear();
+
+            return RedirectToAction("Index", "Home"); // Redirect to homepage after deletion
+        }
     }
 }

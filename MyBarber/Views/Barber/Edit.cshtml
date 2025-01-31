@@ -1,0 +1,223 @@
+@model MyBarber.Models.Barber
+
+@{
+    ViewData["Title"] = "Edit Profile";
+}
+
+<div class="hero-section fade-in">
+    <div class="hero-content">
+        <div class="profile-icon">
+            <i class="fas fa-user-circle"></i>
+        </div>
+        <h1 class="main-title">Barber Profile</h1>
+        <p class="hero-text">Update and manage your professional information to enhance your visibility</p>
+    </div>
+</div>
+
+<div class="profile-container fade-in">
+    <div class="profile-card">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Name</label>
+                    <input asp-for="Name" class="input-field" required />
+                </div>
+
+                <div class="input-group">
+                    <label>Location</label>
+                    <input asp-for="Location" class="input-field" required />
+                </div>
+
+                <div class="input-group">
+                    <label>Phone Number</label>
+                    <input asp-for="PhoneNumber" class="input-field" type="tel" required />
+                </div>
+
+                <div class="input-group">
+                    <label>Pricing (€)</label>
+                    <input asp-for="Pricing" class="input-field" type="number" step="0.01" required />
+                </div>
+
+                <div class="input-group full-span">
+                    <label>Services</label>
+                    <textarea asp-for="Services" class="input-field textarea"></textarea>
+                </div>
+            </div>
+
+            <div class="button-wrapper">
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-save"></i>
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #2193b0, #6dd5ed);
+        padding: 5rem 2rem;
+        position: relative;
+    }
+
+    .hero-content {
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: center;
+        position: relative;
+        z-index: 2;
+    }
+
+    .profile-icon {
+        font-size: 4rem;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 1.5rem;
+    }
+
+    .main-title {
+        font-size: 3.2rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 1rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .hero-text {
+        font-size: 1.3rem;
+        color: rgba(255, 255, 255, 0.9);
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    .profile-container {
+        max-width: 1000px;
+        margin: 2rem auto 0;
+        padding: 0 20px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .profile-card {
+        background: white;
+        border-radius: 15px;
+        padding: 2.5rem;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .input-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .input-group.full-span {
+        grid-column: 1 / -1;
+    }
+
+    label {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #2193b0;
+    }
+
+    .input-field {
+        padding: 1rem;
+        border: 2px solid #e1e1e1;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .input-field:focus {
+        border-color: #2193b0;
+        box-shadow: 0 0 0 4px rgba(33, 147, 176, 0.1);
+        outline: none;
+    }
+
+    .textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .button-wrapper {
+        text-align: center;
+        margin-top: 2rem;
+    }
+
+    .submit-btn {
+        background: linear-gradient(135deg, #2193b0, #6dd5ed);
+        color: white;
+        border: none;
+        padding: 1rem 3rem;
+        border-radius: 30px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(33, 147, 176, 0.3);
+    }
+
+    .fade-in {
+        animation: fadeIn 0.5s ease-in;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@media (max-width: 768px) {
+    .hero-section {
+        padding: 4rem 1.5rem;
+    }
+
+    .main-title {
+        font-size: 2.5rem;
+    }
+
+    .hero-text {
+        font-size: 1.1rem;
+    }
+
+    .profile-icon {
+        font-size: 3rem;
+    }
+
+    .input-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .profile-card {
+        padding: 1.5rem;
+    }
+
+    .profile-container {
+        margin-top: 2rem;
+    }
+    }
+</style>

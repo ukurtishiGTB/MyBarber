@@ -18,18 +18,10 @@
                 <input type="password" name="Password" required placeholder="Password">
             </div>
 
-            <div class="remember-forgot">
-                <label>
-                    <input type="checkbox" name="RememberMe">
-                    <span>Remember me</span>
-                </label>
-                <a href="#">Forgot password?</a>
-            </div>
-
             <button type="submit">Sign In</button>
 
             <div class="register-link">
-                Don't have an account? <a asp-controller="Account" asp-action="Register">Sign Up</a>
+                Don't have an account? <a asp-controller="Home" asp-action="RegisterChoice">Sign Up</a>
             </div>
         </form>
     </div>
