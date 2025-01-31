@@ -166,6 +166,20 @@ public class AppointmentController : Controller
 
         return View(pendingAppointments);
     }
+    
+    private void SendNotification(int userId, string message)
+    {
+        var notification = new UserNotification()
+        {
+            UserId = userId, // For users
+            Message = message,
+            CreatedAt = DateTime.UtcNow,
+            IsRead = false
+        };
+
+        _dbContext.UserNotifications.Add(notification);
+        _dbContext.SaveChanges();
+    }
 
 
     [HttpPost]
@@ -179,6 +193,8 @@ public class AppointmentController : Controller
 
         appointment.Status = AppointmentStatus.Accepted;
         _dbContext.SaveChanges();
+        
+        SendNotification(appointment.UserId, "Your appointment has been accepted.");
 
         return RedirectToAction("ManageAppointments", new { barberId = appointment.BarberId });
     }
@@ -194,6 +210,7 @@ public class AppointmentController : Controller
 
         appointment.Status = AppointmentStatus.Rejected;
         _dbContext.SaveChanges();
+        SendNotification(appointment.UserId, "Your appointment has been rejected.");
 
         return RedirectToAction("ManageAppointments", new { barberId = appointment.BarberId });
     }
