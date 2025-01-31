@@ -1,0 +1,31 @@
+@inject MyBarber.Data.ApplicationDbContext DbContext
+@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    var userId = HttpContextAccessor.HttpContext.Session.GetInt32("UserId");
+    var notifications = DbContext.UserNotifications
+        .Where(n => n.UserId == userId)
+        .OrderByDescending(n => n.CreatedAt)
+        .ToList();
+}
+
+<div class="list-group">
+    @if (!notifications.Any())
+    {
+        <div class="list-group-item text-center">
+            No notifications
+        </div>
+    }
+    else
+    {
+        foreach (var notification in notifications)
+        {
+            <div class="list-group-item @(!notification.IsRead ? "fw-bold" : "")">
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">@notification.CreatedAt.ToString("MMM dd, HH:mm")</small>
+                </div>
+                <p class="mb-1">@notification.Message</p>
+            </div>
+        }
+    }
+</div>

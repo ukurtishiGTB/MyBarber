@@ -1,3 +1,5 @@
+using MyBarber.Models;
+
 namespace MyBarber.ViewModels;
 
 public class UserAppointmentsViewModel

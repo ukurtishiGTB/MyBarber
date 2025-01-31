@@ -190,11 +190,12 @@ public class AppointmentController : Controller
         {
             return NotFound("Appointment not found.");
         }
+        var barber= _dbContext.Barbers.Find(appointment.BarberId);
 
         appointment.Status = AppointmentStatus.Accepted;
         _dbContext.SaveChanges();
         
-        SendNotification(appointment.UserId, "Your appointment has been accepted.");
+        SendNotification(appointment.UserId, $"Your appointment with {barber.Name} has been accepted .");
 
         return RedirectToAction("ManageAppointments", new { barberId = appointment.BarberId });
     }
@@ -207,10 +208,11 @@ public class AppointmentController : Controller
         {
             return NotFound("Appointment not found.");
         }
+        var barber=_dbContext.Barbers.Find(appointment.BarberId);
 
         appointment.Status = AppointmentStatus.Rejected;
         _dbContext.SaveChanges();
-        SendNotification(appointment.UserId, "Your appointment has been rejected.");
+        SendNotification(appointment.UserId, $"Your appointment with {barber.Name} has been rejected.");
 
         return RedirectToAction("ManageAppointments", new { barberId = appointment.BarberId });
     }
@@ -293,17 +295,24 @@ public IActionResult MyAppointments()
 }
 
 [HttpPost]
-public IActionResult MarkUserNotificationAsRead(int notificationId)
+public IActionResult MarkUserNotificationsAsRead()
 {
-    var userId = GetCurrentUserId();
-    var notification = _dbContext.UserNotifications
-        .FirstOrDefault(n => n.Id == notificationId && n.UserId == userId);
+    var userId = HttpContext.Session.GetInt32("UserId");
+    if (userId == null)
+    {
+        return Unauthorized();
+    }
 
-    if (notification != null)
+    var unreadNotifications = _dbContext.UserNotifications
+        .Where(n => n.UserId == userId && !n.IsRead)
+        .ToList();
+
+    foreach (var notification in unreadNotifications)
     {
         notification.IsRead = true;
-        _dbContext.SaveChanges();
     }
+
+    _dbContext.SaveChanges();
 
     return Ok();
 }

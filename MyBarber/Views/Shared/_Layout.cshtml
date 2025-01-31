@@ -283,8 +283,33 @@
                         </div>
                     }
 
+                    @if (ViewContext.HttpContext.Session.GetInt32("UserId") != null)
+                    {
+                        <div class="nav-item dropdown">
+                            <div id="user-notification-bell" class="notification-bell" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-bell"></i>
+                                @{
+                                    var userId = HttpContextAccessor.HttpContext.Session.GetInt32("UserId");
+                                    var userNotificationCount = 0;
 
-                    <form class="search-form" method="get" action="/Barber/Search">
+                                    if (userId != null)
+                                    {
+                                        userNotificationCount = DbContext.UserNotifications.Count(n => n.UserId == userId && !n.IsRead);
+                                    }
+
+                                    if (userNotificationCount > 0)
+                                    {
+                                        <span class="notification-badge">@userNotificationCount</span>
+                                    }
+                                }
+                            </div>
+                            <div class="dropdown-menu dropdown-menu-end">
+                                @await Html.PartialAsync("_UserNotificationList")
+                            </div>
+                        </div>
+                    }
+
+<form class="search-form" method="get" action="/Barber/Search">
                         <input type="text" name="searchTerm" placeholder="Search barbers...">
                         <button type="submit">
                             <i class="fas fa-search"></i>
@@ -303,7 +328,7 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
-    <script>
+<script>
         document.getElementById("notification-bell").addEventListener("click", function () {
             fetch('/Appointment/MarkNotificationsAsRead', { method: 'POST' })
                 .then(response => {
@@ -328,6 +353,21 @@
             }
         });
     </script>
+<script>
+    document.getElementById("user-notification-bell")?.addEventListener("click", function () {
+        fetch('/Appointment/MarkUserNotificationsAsRead', { method: 'POST' })
+            .then(response => {
+                if (response.ok) {
+                    sessionStorage.setItem('userNotificationsRead', 'true');
+                    const badge = this.querySelector('.notification-badge');
+                    if (badge) {
+                        badge.style.display = 'none';
+                    }
+                }
+            })
+            .catch(error => console.error('Error marking notifications as read:', error));
+    });
+</script>
 
     @await RenderSectionAsync("Scripts", required: false)
     <script src="https://kit.fontawesome.com/d8ce167a50.js" crossorigin="anonymous"></script>
