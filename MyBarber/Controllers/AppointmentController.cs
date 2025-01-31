@@ -166,6 +166,20 @@ public class AppointmentController : Controller
 
         return View(pendingAppointments);
     }
+    
+    private void SendNotification(int userId, string message)
+    {
+        var notification = new UserNotification()
+        {
+            UserId = userId, // For users
+            Message = message,
+            CreatedAt = DateTime.UtcNow,
+            IsRead = false
+        };
+
+        _dbContext.UserNotifications.Add(notification);
+        _dbContext.SaveChanges();
+    }
 
 
     [HttpPost]
@@ -176,9 +190,12 @@ public class AppointmentController : Controller
         {
             return NotFound("Appointment not found.");
         }
+        var barber= _dbContext.Barbers.Find(appointment.BarberId);
 
         appointment.Status = AppointmentStatus.Accepted;
         _dbContext.SaveChanges();
+        
+        SendNotification(appointment.UserId, $"Your appointment with {barber.Name} has been accepted .");
 
         return RedirectToAction("ManageAppointments", new { barberId = appointment.BarberId });
     }
@@ -191,9 +208,11 @@ public class AppointmentController : Controller
         {
             return NotFound("Appointment not found.");
         }
+        var barber=_dbContext.Barbers.Find(appointment.BarberId);
 
         appointment.Status = AppointmentStatus.Rejected;
         _dbContext.SaveChanges();
+        SendNotification(appointment.UserId, $"Your appointment with {barber.Name} has been rejected.");
 
         return RedirectToAction("ManageAppointments", new { barberId = appointment.BarberId });
     }
@@ -240,5 +259,62 @@ public class AppointmentController : Controller
 
         return Ok(); // Return a success response
     }
+
+    // Add this method to AppointmentController
+public IActionResult MyAppointments()
+{
+    try
+    {
+        var userId = GetCurrentUserId();
+        
+        // Get appointments with notifications
+        var appointments = _dbContext.Appointments
+            .Include(a => a.Barber)
+            .Where(a => a.UserId == userId)
+            .OrderByDescending(a => a.AppointmentDate)
+            .ToList();
+
+        // Get user's notifications
+        var notifications = _dbContext.UserNotifications
+            .Where(n => n.UserId == userId)
+            .OrderByDescending(n => n.CreatedAt)
+            .ToList();
+
+        var viewModel = new UserAppointmentsViewModel
+        {
+            Appointments = appointments,
+            Notifications = notifications
+        };
+
+        return View(viewModel);
+    }
+    catch (UnauthorizedAccessException)
+    {
+        return RedirectToAction("Login", "Login");
+    }
+}
+
+[HttpPost]
+public IActionResult MarkUserNotificationsAsRead()
+{
+    var userId = HttpContext.Session.GetInt32("UserId");
+    if (userId == null)
+    {
+        return Unauthorized();
+    }
+
+    var unreadNotifications = _dbContext.UserNotifications
+        .Where(n => n.UserId == userId && !n.IsRead)
+        .ToList();
+
+    foreach (var notification in unreadNotifications)
+    {
+        notification.IsRead = true;
+    }
+
+    _dbContext.SaveChanges();
+
+    return Ok();
+}
 
 }
